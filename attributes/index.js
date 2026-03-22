@@ -8,17 +8,26 @@ class FrequencyVis {
   }
 
   initVis() {
-    var margin = {top: 20, right: 30, bottom: 40, left: 125},
+    var margin = {top: 20, right: 30, bottom: 40, left: 150},
       width = 400 - margin.left - margin.right,
       height = 600 - margin.top - margin.bottom;
 
     // Group the data by the chosen attribute.
-    this.data = d3.group(this.rows, d => d[this.groupBy])
+    let data = d3.group(this.rows, d => d[this.groupBy])
     // For each array of values (group), get the length to be used as the group's value.
     // TODO: Enusre we're using the correct service type 
     // I think data.js handles this, but need to check
-    this.values = this.data.values().toArray().map(d => d.length)
-    this.keys = this.data.keys().toArray()
+    let values = data.values().toArray().map(d => d.length)
+    let keys = data.keys().toArray()
+
+    this.data = keys.map((k, i) => ({
+      key: k,
+      value: values[i]
+    }));
+
+    // Sort in descending order
+    this.data.sort((f, s) => s.value - f.value);
+    console.log(this.data)
 
     this.svg = d3.select(this.id)
       .append("svg")
@@ -29,7 +38,7 @@ class FrequencyVis {
 
     // Add X axis
     this.xAxis = d3.scaleLinear()
-      .domain(d3.extent(this.values))
+      .domain(d3.extent(this.data, d => d.value))
       .range([ 1.5, width]);
     this.svg.append("g")
       .attr("transform", `translate(0, ${height})`)
@@ -41,7 +50,7 @@ class FrequencyVis {
     // Add Y axis
     this.yAxis = d3.scaleBand()
       .range([ 0, height ])
-      .domain(this.keys)
+      .domain(this.data.map(d => d.key))
       .padding(.1);
     this.svg.append("g")
       .call(d3.axisLeft(this.yAxis).tickSizeOuter(0));
@@ -49,11 +58,11 @@ class FrequencyVis {
   // Add bars
   this.svg
     .selectAll()
-    .data(this.keys)
+    .data(this.data)
     .join("rect")
     .attr("x", this.xAxis(0))
-    .attr("y", d => this.yAxis(d))
-    .attr("width", (_, i) => this.xAxis(this.values[i]))
+    .attr("y", d => this.yAxis(d.key))
+    .attr("width", d => this.xAxis(d.value))
     .attr("height", this.yAxis.bandwidth() )
     .attr("fill", "#69b3a2")
   }
