@@ -26,8 +26,12 @@ export async function loadServiceRows() {
     const priorityText = (row.PRIORITY || "Unknown").trim().toLowerCase(); // normalize inconsistent csv casing
     const neighborhoodText = (row.NEIGHBORHOOD || "Unknown Neighborhood").trim().toLowerCase();
     const agencyText = (row.DEPT_NAME || "Unknown Agency").trim().toLowerCase();
+    const methodText = (row.METHOD_RECEIVED || "Unknown").trim().toLowerCase();
 
     return {
+      methodReceived: methodText
+        ? methodText.replace(/\b[a-z]/g, (char) => char.toUpperCase())
+        : "Unknown",
       srTypeDesc: row.SR_TYPE_DESC || "POTHOLE, REPAIR",
       priority: priorityText ? priorityText.replace(/\b[a-z]/g, (char) => char.toUpperCase()) : "Unknown",
       neighborhood: neighborhoodText

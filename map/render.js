@@ -37,6 +37,9 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
             <dt>Agency</dt><dd>${row.agency}</dd>
           </div>
           <div class="map-tooltip__row">
+            <dt>Method received</dt><dd>${row.methodReceived}</dd>
+          </div>
+          <div class="map-tooltip__row">
             <dt>Priority</dt><dd>${row.priority}</dd>
           </div>
           <div class="map-tooltip__row">
