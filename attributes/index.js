@@ -9,7 +9,7 @@ class FrequencyVis {
 
   initVis() {
     var margin = {top: 20, right: 30, bottom: 40, left: 150},
-      width = 300 - margin.left - margin.right,
+      width = 350 - margin.left - margin.right,
       height = 600 - margin.top - margin.bottom;
 
     // Group the data by the chosen attribute.
@@ -94,6 +94,36 @@ class FrequencyVis {
           .style("display", "none");
       });
 
+    this.brushLayer = this.svg.append("g").attr("class", "brush");
+    this.brush = d3.brushY().on("start brush end", ({selection}) => {
+      if (selection) {
+        const [y0, y1] = selection;
+        this.bars
+            .style("opacity", "0.1")
+            .filter(d => {
+              // If any point on a bar is encompassed by the brush, we include it. 
+              let min = this.yAxis(d.key);
+              let max = this.yAxis(d.key) + (this.yAxis.bandwidth());
+              return (
+                // The brush is within a bar
+                (y0 >= min && y1 <= max) ||
+                // The brush is partially in one and its neighbor
+                (y0 <= max && y1 >= max) ||
+                (y0 <= min && y1 >= min)
+              )
+            })
+        .style("opacity", "1.0")
+        .data()
+        // This is an array of arrays, so we have to flatten it
+        .flat();
+      }
+
+      else {
+          this.bars.style("opacity", "1.0");
+      }
+    });
+
+    this.brushLayer.call(this.brush);
     this.barsLayer.raise();
   }
 
