@@ -241,3 +241,8 @@ body {
   justify-content: center; /* Centers the SVGs horizontally (optional) */
   gap: 20px; /* Adds space between the SVGs (optional) */
 }
+
+#tooltip {
+  position: absolute;
+  /* z-index: 1000; */
+}

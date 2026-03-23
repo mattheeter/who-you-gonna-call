@@ -9,7 +9,7 @@ class FrequencyVis {
 
   initVis() {
     var margin = {top: 20, right: 30, bottom: 40, left: 150},
-      width = 400 - margin.left - margin.right,
+      width = 300 - margin.left - margin.right,
       height = 600 - margin.top - margin.bottom;
 
     // Group the data by the chosen attribute.
@@ -27,7 +27,6 @@ class FrequencyVis {
 
     // Sort in descending order
     this.data.sort((f, s) => s.value - f.value);
-    console.log(this.data)
 
     this.svg = d3.select(this.id)
       .append("svg")
@@ -39,12 +38,12 @@ class FrequencyVis {
     // Add X axis
     this.xAxis = d3.scaleLinear()
       .domain(d3.extent(this.data, d => d.value))
-      .range([ 1.5, width]);
+      .range([ 0, width]);
     this.svg.append("g")
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(this.xAxis).tickSizeOuter(0))
       .selectAll("text")
-        .attr("transform", "translate(-10,0)rotate(-45)")
+        .attr("transform", "translate(-10,10)rotate(-90)")
         .style("text-anchor", "end");
     
     // Add Y axis
@@ -55,16 +54,47 @@ class FrequencyVis {
     this.svg.append("g")
       .call(d3.axisLeft(this.yAxis).tickSizeOuter(0));
 
-  // Add bars
-  this.svg
-    .selectAll()
-    .data(this.data)
-    .join("rect")
-    .attr("x", this.xAxis(0))
-    .attr("y", d => this.yAxis(d.key))
-    .attr("width", d => this.xAxis(d.value))
-    .attr("height", this.yAxis.bandwidth() )
-    .attr("fill", "#69b3a2")
+    // Add bars
+    this.barsLayer = this.svg.append("g");
+    this.bars = this.barsLayer
+      .selectAll()
+      .data(this.data)
+      .join("rect")
+        .attr("x", this.xAxis(0))
+        .attr("y", d => this.yAxis(d.key))
+        .attr("width", d => this.xAxis(d.value) - this.xAxis(0))
+        .attr("height", this.yAxis.bandwidth())
+        .attr("fill", "#69b3a2");
+  
+    this.bars
+      .on("mouseover", (event, d) => {
+        d3.select("#tooltip")
+          .style("display", "block")
+          .html(`
+            <div class="map-tooltip__body">
+              <div class="map-tooltip__header">
+                <span class="map-tooltip__dot"></span>
+                <strong class="map-tooltip__title">${d.key}</strong>
+              </div>
+              <dl class="map-tooltip__details">
+                <div class="map-tooltip__row">
+                  <dt></dt><dd>${d.value} calls</dd>
+                </div>
+              </dl>
+            </div>
+          `);
+      })
+      .on("mousemove", (event) => {
+        d3.select("#tooltip")
+          .style("left", (event.pageX + 15) + "px")
+          .style("top", (event.pageY + 15) + "px");
+      })
+      .on("mouseout", () => {
+        d3.select("#tooltip")
+          .style("display", "none");
+      });
+
+    this.barsLayer.raise();
   }
 
   async loadData() {
@@ -92,4 +122,8 @@ export async function initializeAttributeViews() {
   await neighborhoodFreq.initialize();
   const receivedFreq = new FrequencyVis("methodReceived", "#received_freq");
   await receivedFreq.initialize();
+  const deptFreq = new FrequencyVis("agency", "#dept_freq");
+  await deptFreq.initialize();
+  const priorityFreq = new FrequencyVis("priority", "#priority_freq");
+  await priorityFreq.initialize();
 }
