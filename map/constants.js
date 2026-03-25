@@ -2,6 +2,7 @@ export const SERVICE_TYPE = "PTHOLE";
 export const DATA_URL = encodeURI(
   "./data/Cincinnati_311_(Non-Emergency)_Service_Requests_20260227.csv"
 );
+export const BOUNDARIES_GEOJSON_URL = "./data/cincinnati.geojson";
 export const CINCINNATI_CENTER = [39.143, -84.53];
 export const DEFAULT_ZOOM = 12;
 export const MISSING_VALUE_COLOR = "#94a3b8";
