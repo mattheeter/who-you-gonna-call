@@ -1,3 +1,4 @@
+import { addBoundariesLayer } from "./boundaries.js";
 import { createMap } from "./controls.js";
 import { loadServiceRows } from "./data.js";
 import { createEncodingModel } from "./encodings.js";
@@ -55,6 +56,10 @@ class ServiceCallMap {
 
   async initialize() {
     this.initVis();
+
+    addBoundariesLayer(this.map).catch((error) => {
+      console.error("Failed to load boundary GeoJSON:", error);
+    });
 
     try {
       await this.loadData();
