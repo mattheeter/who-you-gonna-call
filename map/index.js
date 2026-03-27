@@ -29,7 +29,7 @@ class ServiceCallMap {
   }
 
   async loadData() {
-    this.rows = await loadServiceRows();
+    this.rows = await loadServiceRows("PTHOLE");
     this.encodingModel = createEncodingModel(this.rows);
   }
 

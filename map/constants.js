@@ -1,4 +1,19 @@
-export const SERVICE_TYPE = "PTHOLE";
+export const SERVICE_TYPES = [
+  { value: "MTL-FRN", label: "Metal, Furniture, Bulk Item Trash Pick-up"},
+  { value: "PTHOLE", label: "Pothole Repair"},
+  { value: "SLPYST", label: "Slippery/Icy/Snowy Streets"},
+  { value: "RF-COLLT", label: "Trash Missed or Request for Collection"},
+  { value: "BLD-RES", label: "Building, Residential"},
+  { value: "LITR-PRV", label: "Litter, Private Property"},
+  { value: "CMDVABDV", label: "Overtime Parked Vehicle"},
+  { value: "TLGR-PRV", label: "Tall Grass/Weeds, Private Property"},
+  { value: "311ASSIT", label: "311 Assitance"},
+  { value: "STRSGN", label: "Street Sign Down/Missing"},
+  { value: "TRASH-I", label: "Improper Set Out of Trash"},
+  { value: "PLCJUNKV", label: "Abandoned Vehicle"},
+  { value: "DAPUB1", label: "Dead Animal Removal"},
+  { value: "STRTLITE", label: "Street Lighting Repair"}
+]
 export const DATA_URL = encodeURI(
   "./data/Cincinnati_311_(Non-Emergency)_Service_Requests_20260227.csv"
 );
