@@ -1,4 +1,4 @@
-import { DATA_URL, /*SERVICE_TYPE*/ } from "./constants.js";
+import { DATA_URL, SERVICE_TYPES } from "./constants.js";
 
 const { d3 } = window;
 const parseDate = d3.utcParse("%Y %b %d %I:%M:%S %p"); // treat exported dates as calendar days so DST does not create fractional durations
@@ -17,10 +17,12 @@ function parseCoordinate(value) {
   return Number.isFinite(coordinate) ? coordinate : null;
 }
 
-export async function loadServiceRows(service_type) {
+export async function loadServiceRows(serviceTypes) {
   const rows = await d3.csv(DATA_URL);
 
-  return rows.filter((row) => row.SR_TYPE === service_type).map((row) => {
+  const validTypes = serviceTypes.map(s => s.value);
+
+  return rows.filter((row) => validTypes.includes(row.SR_TYPE)).map((row) => {
     const createdDate = parseDate(row.DATE_CREATED);
     const updatedDate = parseDate(row.DATE_LAST_UPDATE);
     const priorityText = (row.PRIORITY || "Unknown").trim().toLowerCase(); // normalize inconsistent csv casing
@@ -29,10 +31,11 @@ export async function loadServiceRows(service_type) {
     const methodText = (row.METHOD_RECEIVED || "Unknown").trim().toLowerCase();
 
     return {
+      serviceType: row.SR_TYPE,
       methodReceived: methodText
         ? methodText.replace(/\b[a-z]/g, (char) => char.toUpperCase())
         : "Unknown",
-      srTypeDesc: row.SR_TYPE_DESC || "POTHOLE, REPAIR",
+      srTypeDesc: row.SR_TYPE_DESC, // || "POTHOLE, REPAIR", remove later
       priority: priorityText ? priorityText.replace(/\b[a-z]/g, (char) => char.toUpperCase()) : "Unknown",
       neighborhood: neighborhoodText
         ? neighborhoodText.replace(/\b[a-z]/g, (char) => char.toUpperCase())

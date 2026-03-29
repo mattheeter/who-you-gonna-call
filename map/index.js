@@ -1,9 +1,11 @@
 import { addBoundariesLayer } from "./boundaries.js";
+import { SERVICE_TYPES } from "./constants.js";
 import { createMap } from "./controls.js";
 import { loadServiceRows } from "./data.js";
 import { createEncodingModel } from "./encodings.js";
 import { createLegendControl } from "./legend.js";
 import { drawPoints } from "./render.js";
+import { createServiceTypeSelectorControl } from "./serviceTypeSelector.js";
 
 class ServiceCallMap {
   constructor() {
@@ -13,6 +15,7 @@ class ServiceCallMap {
     this.markerLayer = null;
     this.pointRenderer = null;
     this.legendControl = null;
+    this.selectedServiceTypes = SERVICE_TYPES.map(s => s.value);
   }
 
   initVis() {
@@ -26,15 +29,25 @@ class ServiceCallMap {
       onModeChange: () => this.updateVis(),
       onLegendClick: (key) => this.handleLegendClick(key)
     });
+
+    createServiceTypeSelectorControl({
+      map: this.map,
+      onSelectionChange: (selected) => {
+        this.selectedServiceTypes = selected;
+        this.updateVis();
+      }
+    }).addTo(this.map);
   }
 
   async loadData() {
-    this.rows = await loadServiceRows("PTHOLE");
-    this.encodingModel = createEncodingModel(this.rows);
+    this.rows = await loadServiceRows(SERVICE_TYPES);
   }
 
   updateVis() {
-    if (!this.rows.length || !this.encodingModel) return; // wait until the csv and encoding model are ready
+    if (!this.rows.length) return; // wait until the csv is ready
+
+    const filteredRows = this.rows.filter(row => this.selectedServiceTypes.includes(row.serviceType));
+    this.encodingModel = createEncodingModel(filteredRows);
 
     const modeState = this.encodingModel.getModeState(this.legendControl.getMode());
     const activeKeys = this.legendControl.updateModeState(modeState);

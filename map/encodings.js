@@ -67,6 +67,17 @@ const CATEGORY_MODE_CONFIG = {
         "Unknown Agency": UNKNOWN_CATEGORY_COLOR
       });
     }
+  },
+  serviceType: {
+    scaleKey: "serviceTypeScale",
+    rowKey: "serviceType",
+    buildScale(mappedRows) {
+      return buildOrdinalScale(
+        sortedDistinct(mappedRows, "serviceType"),
+        {},
+        CATEGORY_THEME_COLORS
+      );
+    }
   }
 };
 

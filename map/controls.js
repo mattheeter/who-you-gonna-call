@@ -98,4 +98,6 @@ export function createMap() {
     pointRenderer,
     markerLayer: L.layerGroup().addTo(map) // collect all markers in a single replaceable layer
   };
+  //
 }
+

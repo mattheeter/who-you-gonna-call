@@ -26,6 +26,7 @@ export const HIGHLIGHT_FILL_OPACITY = 0.84;
 export const HIGHLIGHT_STROKE_OPACITY = 0.9;
 export const COLOR_BY_OPTIONS = [
   { value: "responseTimeDays", label: "Resolution time" },
+  { value: "serviceType", label: "Service type" },
   { value: "neighborhood", label: "Neighborhood" },
   { value: "priority", label: "Priority" },
   { value: "agency", label: "Public agency" }
