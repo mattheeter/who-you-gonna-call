@@ -30,7 +30,14 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
       }
     });
 
-    return activeKeys.size ? activeKeys : new Set(validKeys);
+    // Add new valid keys that weren't previously active
+    validKeys.forEach((key) => {
+      if (!existingKeys.has(key)) {
+        activeKeys.add(key);
+      }
+    });
+
+    return activeKeys;
   }
 
   legend.onAdd = function onAdd() {
