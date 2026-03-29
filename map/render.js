@@ -1,4 +1,5 @@
 import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY } from "./constants.js";
+import { SERVICE_TYPES } from "./constants.js";
 
 const { L } = window;
 
@@ -10,7 +11,7 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
     if (row.latitude === null || row.longitude === null) return;
 
     const marker = L.circleMarker([row.latitude, row.longitude], {
-      radius: 5,
+      radius: 3,
       color: "#1f2937",
       weight: 0.5,
       opacity: HIGHLIGHT_STROKE_OPACITY,
@@ -27,7 +28,7 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
       `<div class="map-tooltip__body">
         <div class="map-tooltip__header">
           <span class="map-tooltip__dot" style="background:${fillColor}"></span>
-          <strong class="map-tooltip__title">${row.srTypeDesc}</strong>
+          <strong class="map-tooltip__title">${SERVICE_TYPES.find(s => s.value === row.serviceType)?.label || row.srTypeDesc}</strong>
         </div>
         <dl class="map-tooltip__details">
           <div class="map-tooltip__row">
