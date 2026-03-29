@@ -3,7 +3,7 @@ import { SERVICE_TYPES } from "./constants.js";
 
 const { L } = window;
 
-export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
+export function drawPoints({ points, activeKeys, pointRenderer, markerLayer, showOnlySelected = false }) {
   markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
 
   const selectedMarkers = [];
@@ -85,6 +85,8 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
 
   // Add selected markers first (on top)
   selectedMarkers.forEach(marker => markerLayer.addLayer(marker));
-  // Then deselected markers (behind)
-  deselectedMarkers.forEach(marker => markerLayer.addLayer(marker));
+  // Then deselected markers (behind) unless showOnlySelected is true
+  if (!showOnlySelected) {
+    deselectedMarkers.forEach(marker => markerLayer.addLayer(marker));
+  }
 }

@@ -1,6 +1,6 @@
 import { addBoundariesLayer } from "./boundaries.js";
 import { SERVICE_TYPES } from "./constants.js";
-import { createMap } from "./controls.js";
+import { createMap, createShowOnlySelectedControl } from "./controls.js";
 import { loadServiceRows } from "./data.js";
 import { createEncodingModel } from "./encodings.js";
 import { createLegendControl } from "./legend.js";
@@ -15,6 +15,7 @@ class ServiceCallMap {
     this.markerLayer = null;
     this.pointRenderer = null;
     this.legendControl = null;
+    this.showOnlySelectedControl = null;
     this.selectedServiceTypes = ['MTL-FRN', 'PTHOLE', 'SLPYST'];
   }
 
@@ -28,6 +29,11 @@ class ServiceCallMap {
       map: this.map,
       onModeChange: () => this.updateVis(),
       onLegendClick: (key) => this.handleLegendClick(key)
+    });
+
+    this.showOnlySelectedControl = createShowOnlySelectedControl({
+      map: this.map,
+      onToggle: () => this.updateVis()
     });
 
     createServiceTypeSelectorControl({
@@ -63,7 +69,8 @@ class ServiceCallMap {
       points: modeState.points,
       activeKeys,
       pointRenderer: this.pointRenderer,
-      markerLayer: this.markerLayer
+      markerLayer: this.markerLayer,
+      showOnlySelected: this.showOnlySelectedControl.isShowOnlySelected()
     });
     this.legendControl.render();
   }

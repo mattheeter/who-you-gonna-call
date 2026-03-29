@@ -158,6 +158,62 @@ body {
   color: #1e293b;
 }
 
+#map .leaflet-control-show-only-selected {
+  background: rgba(255, 255, 255, 0.96);
+  padding: 8px;
+  border: 1px solid #c8d2e3;
+  border-radius: 8px;
+}
+
+.switch-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch-label input[type="checkbox"] {
+  display: none;
+}
+
+.switch-slider {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  background-color: #cbd5e1;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.switch-label input[type="checkbox"]:checked + .switch-slider {
+  background-color: #4f46e5;
+}
+
+.switch-slider::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  transition: left 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.switch-label input[type="checkbox"]:checked + .switch-slider::after {
+  left: 22px;
+}
+
+.switch-text {
+  font-size: 13px;
+  color: #1e293b;
+  font-weight: 500;
+}
+
 #map .leaflet-tooltip.map-tooltip {
   --map-tooltip-accent: #d1d9e6;
   padding: 0;
