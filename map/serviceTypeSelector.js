@@ -4,6 +4,7 @@ const { L } = window;
 
 export function createServiceTypeSelectorControl({ map, onSelectionChange, initialSelected = [] }) {
   const control = L.control({ position: "topright" });
+  let labels = [];
 
   control.onAdd = function () {
     const container = L.DomUtil.create("div", "service-type-selector leaflet-control");
@@ -33,6 +34,7 @@ export function createServiceTypeSelectorControl({ map, onSelectionChange, initi
       checkbox.checked = initialSelected.includes(type.value);
       label.appendChild(document.createTextNode(` ${type.label}`));
       checkboxes.push(checkbox);
+      labels.push({ label, type: type.value, originalText: type.label });
     });
 
     // Event listeners
@@ -68,6 +70,25 @@ export function createServiceTypeSelectorControl({ map, onSelectionChange, initi
     updateSelection();
 
     return container;
+  };
+
+  control.updateCounts = function(rows) {
+    // Calculate counts for each service type
+    const counts = {};
+    SERVICE_TYPES.forEach(type => {
+      counts[type.value] = 0;
+    });
+    rows.forEach(row => {
+      if (counts.hasOwnProperty(row.serviceType)) {
+        counts[row.serviceType]++;
+      }
+    });
+
+    // Update labels with counts
+    labels.forEach(({ label, type, originalText }) => {
+      const count = counts[type] || 0;
+      label.lastChild.textContent = ` ${originalText} (${count.toLocaleString()})`;
+    });
   };
 
   return control;

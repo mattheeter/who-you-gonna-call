@@ -16,6 +16,7 @@ class ServiceCallMap {
     this.pointRenderer = null;
     this.legendControl = null;
     this.showOnlySelectedControl = null;
+    this.serviceTypeSelectorControl = null;
     this.selectedServiceTypes = ['MTL-FRN', 'PTHOLE', 'SLPYST'];
   }
 
@@ -36,7 +37,7 @@ class ServiceCallMap {
       onToggle: () => this.updateVis()
     });
 
-    createServiceTypeSelectorControl({
+    this.serviceTypeSelectorControl = createServiceTypeSelectorControl({
       map: this.map,
       onSelectionChange: (selected) => {
         this.selectedServiceTypes = selected;
@@ -90,6 +91,7 @@ class ServiceCallMap {
 
     try {
       await this.loadData();
+      this.serviceTypeSelectorControl.updateCounts(this.rows);
       this.updateVis();
     } catch (error) {
       console.error("Failed to load 311 CSV:", error);
