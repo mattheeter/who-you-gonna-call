@@ -22,8 +22,11 @@ export const CINCINNATI_CENTER = [39.143, -84.53];
 export const DEFAULT_ZOOM = 12;
 export const MISSING_VALUE_COLOR = "#94a3b8";
 export const UNKNOWN_CATEGORY_COLOR = MISSING_VALUE_COLOR;
-export const HIGHLIGHT_FILL_OPACITY = 0.84;
+export const GRAY_COLOR = "#cccccc";
+export const HIGHLIGHT_FILL_OPACITY = 0.9;
 export const HIGHLIGHT_STROKE_OPACITY = 0.9;
+export const LOW_FILL_OPACITY = 0.1;
+export const LOW_STROKE_OPACITY = 0.1;
 export const COLOR_BY_OPTIONS = [
   { value: "serviceType", label: "Service type" },
   { value: "responseTimeDays", label: "Resolution time" },

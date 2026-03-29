@@ -1,4 +1,4 @@
-import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY } from "./constants.js";
+import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY, LOW_FILL_OPACITY, LOW_STROKE_OPACITY, GRAY_COLOR } from "./constants.js";
 import { SERVICE_TYPES } from "./constants.js";
 
 const { L } = window;
@@ -6,18 +6,25 @@ const { L } = window;
 export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
   markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
 
+  const selectedMarkers = [];
+  const deselectedMarkers = [];
+
   points.forEach(({ row, fillColor, legendKey }) => {
-    if (!activeKeys.has(legendKey)) return;
     if (row.latitude === null || row.longitude === null) return;
+
+    const isActive = activeKeys.has(legendKey);
+    const finalFillColor = isActive ? fillColor : GRAY_COLOR;
+    const fillOpacity = isActive ? HIGHLIGHT_FILL_OPACITY : LOW_FILL_OPACITY;
+    const strokeOpacity = isActive ? HIGHLIGHT_STROKE_OPACITY : LOW_STROKE_OPACITY;
 
     const marker = L.circleMarker([row.latitude, row.longitude], {
       radius: 3,
       color: "#1f2937",
       weight: 0.5,
-      opacity: HIGHLIGHT_STROKE_OPACITY,
+      opacity: strokeOpacity,
       renderer: pointRenderer,
-      fillColor,
-      fillOpacity: HIGHLIGHT_FILL_OPACITY
+      fillColor: finalFillColor,
+      fillOpacity
     });
     const timeText =
       row.responseTimeDays === null
@@ -27,7 +34,7 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
     marker.bindTooltip(
       `<div class="map-tooltip__body">
         <div class="map-tooltip__header">
-          <span class="map-tooltip__dot" style="background:${fillColor}"></span>
+          <span class="map-tooltip__dot" style="background:${finalFillColor}"></span>
           <strong class="map-tooltip__title">${SERVICE_TYPES.find(s => s.value === row.serviceType)?.label || row.srTypeDesc}</strong>
         </div>
         <dl class="map-tooltip__details">
@@ -65,10 +72,19 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
       // leaflet creates the tooltip DOM lazily, so the accent CSS variable has to be written after open instead of when the marker is first configured
       const tooltipElement = tooltip.getElement();
       if (tooltipElement) {
-        tooltipElement.style.setProperty("--map-tooltip-accent", fillColor);
+        tooltipElement.style.setProperty("--map-tooltip-accent", finalFillColor);
       }
     });
 
-    markerLayer.addLayer(marker);
+    if (isActive) {
+      selectedMarkers.push(marker);
+    } else {
+      deselectedMarkers.push(marker);
+    }
   });
+
+  // Add selected markers first (on top)
+  selectedMarkers.forEach(marker => markerLayer.addLayer(marker));
+  // Then deselected markers (behind)
+  deselectedMarkers.forEach(marker => markerLayer.addLayer(marker));
 }
