@@ -161,7 +161,9 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
           part.className === "legend-dot" ? part.value : null
         )
         .text((part) =>
-          part.className === "legend-dot" ? "" : String(part.value)
+          part.className === "legend-dot" ? "" : 
+          part.className === "legend-count" ? part.value.toLocaleString() : 
+          String(part.value)
         );
     },
     setError(message) {
