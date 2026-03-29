@@ -5,6 +5,15 @@ const { L } = window;
 export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
   markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
 
+  var latLngs = Array();
+  points.forEach(({ row, fillColor, legendKey }) => {
+    if (!activeKeys.has(legendKey)) return;
+    if (row.latitude === null || row.longitude === null) return;
+    latLngs.push([row.latitude, row.longitude]);
+  });
+  markerLayer.addLayer(L.heatLayer(latLngs, {radius: 30, pane:"heatPane",}))
+
+
   points.forEach(({ row, fillColor, legendKey }) => {
     if (!activeKeys.has(legendKey)) return;
     if (row.latitude === null || row.longitude === null) return;
@@ -16,7 +25,8 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
       opacity: HIGHLIGHT_STROKE_OPACITY,
       renderer: pointRenderer,
       fillColor,
-      fillOpacity: HIGHLIGHT_FILL_OPACITY
+      fillOpacity: HIGHLIGHT_FILL_OPACITY,
+      pane: "markerPane"
     });
     const timeText =
       row.responseTimeDays === null

@@ -43,7 +43,7 @@ class ServiceCallMap {
       points: modeState.points,
       activeKeys,
       pointRenderer: this.pointRenderer,
-      markerLayer: this.markerLayer
+      markerLayer: this.markerLayer,
     });
     this.legendControl.render();
   }
