@@ -71,18 +71,19 @@ class FrequencyVis {
         d3.select("#tooltip")
           .style("display", "block")
           .html(`
-            <div class="map-tooltip__body">
-              <div class="map-tooltip__header">
-                <span class="map-tooltip__dot"></span>
-                <strong class="map-tooltip__title">${d.key}</strong>
+            <div class="tooltip_body">
+              <div class="tooltip_header">
+                <span class="tooltip_dot" style="background:#69b3a2"></span>
+                <strong class="tooltip_title">${d.key}</strong>
               </div>
-              <dl class="map-tooltip__details">
-                <div class="map-tooltip__row">
-                  <dt></dt><dd>${d.value} calls</dd>
+              <dl class="tooltip_details">
+                <div class="tooltip_row">
+                  <dt>NUMBER OF CALLS</dt><dd>${d.value}</dd>
                 </div>
               </dl>
             </div>
-          `);
+          `)
+          .style("border", "1px solid #69b3a2");
       })
       .on("mousemove", (event) => {
         d3.select("#tooltip")
