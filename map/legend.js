@@ -162,6 +162,12 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
       statusElement.textContent = message;
       rowsSelection.selectAll("button.legend-row").remove();
       unmappedElement.textContent = "";
+    },
+    setNoPoints() {
+      currentModeState = null;
+      statusElement.textContent = "No points are shown";
+      rowsSelection.selectAll("button.legend-row").remove();
+      unmappedElement.textContent = "";
     }
   };
 }

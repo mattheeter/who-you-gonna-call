@@ -2,7 +2,7 @@ import { SERVICE_TYPES } from "./constants.js";
 
 const { L } = window;
 
-export function createServiceTypeSelectorControl({ map, onSelectionChange }) {
+export function createServiceTypeSelectorControl({ map, onSelectionChange, initialSelected = [] }) {
   const control = L.control({ position: "topright" });
 
   control.onAdd = function () {
@@ -10,7 +10,7 @@ export function createServiceTypeSelectorControl({ map, onSelectionChange }) {
 
     // Button to toggle the panel
     const button = L.DomUtil.create("button", "service-type-toggle", container);
-    button.textContent = "Service Types";
+    button.textContent = "Service Type Selector";
     button.setAttribute("aria-label", "Toggle service type visibility");
 
     // Panel with checkboxes
@@ -30,7 +30,7 @@ export function createServiceTypeSelectorControl({ map, onSelectionChange }) {
       const checkbox = L.DomUtil.create("input", "", label);
       checkbox.type = "checkbox";
       checkbox.value = type.value;
-      checkbox.checked = true; // Default all selected
+      checkbox.checked = initialSelected.includes(type.value);
       label.appendChild(document.createTextNode(` ${type.label}`));
       checkboxes.push(checkbox);
     });

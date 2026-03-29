@@ -15,7 +15,7 @@ class ServiceCallMap {
     this.markerLayer = null;
     this.pointRenderer = null;
     this.legendControl = null;
-    this.selectedServiceTypes = SERVICE_TYPES.map(s => s.value);
+    this.selectedServiceTypes = ['MTL-FRN', 'PTHOLE', 'SLPYST'];
   }
 
   initVis() {
@@ -35,7 +35,8 @@ class ServiceCallMap {
       onSelectionChange: (selected) => {
         this.selectedServiceTypes = selected;
         this.updateVis();
-      }
+      },
+      initialSelected: this.selectedServiceTypes
     }).addTo(this.map);
   }
 
@@ -48,6 +49,12 @@ class ServiceCallMap {
 
     const filteredRows = this.rows.filter(row => this.selectedServiceTypes.includes(row.serviceType));
     this.encodingModel = createEncodingModel(filteredRows);
+
+    if (filteredRows.length === 0) {
+      this.legendControl.setNoPoints();
+      this.markerLayer.clearLayers();
+      return;
+    }
 
     const modeState = this.encodingModel.getModeState(this.legendControl.getMode());
     const activeKeys = this.legendControl.updateModeState(modeState);
