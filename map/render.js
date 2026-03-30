@@ -2,7 +2,7 @@ import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY } from "./constants.js
 
 const { L } = window;
 
-export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
+export function drawPoints({ points, activeKeys, pointRenderer, markerLayer, heatMap }) {
   markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
 
   var latLngs = Array();
@@ -11,7 +11,7 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
     if (row.latitude === null || row.longitude === null) return;
     latLngs.push([row.latitude, row.longitude]);
   });
-  markerLayer.addLayer(L.heatLayer(latLngs, {radius: 30, pane:"heatPane",}))
+  heatMap.setLatLngs(latLngs)
 
 
   points.forEach(({ row, fillColor, legendKey }) => {
@@ -25,8 +25,7 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
       opacity: HIGHLIGHT_STROKE_OPACITY,
       renderer: pointRenderer,
       fillColor,
-      fillOpacity: HIGHLIGHT_FILL_OPACITY,
-      pane: "markerPane"
+      fillOpacity: HIGHLIGHT_FILL_OPACITY
     });
     const timeText =
       row.responseTimeDays === null
