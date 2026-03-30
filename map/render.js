@@ -1,6 +1,9 @@
-import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY } from "./constants.js";
+import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY, SERVICE_TYPES } from "./constants.js";
 
 const { L } = window;
+const SERVICE_TYPE_LABELS = new Map(
+  SERVICE_TYPES.map((serviceType) => [serviceType.value, serviceType.label])
+);
 
 export function drawPoints({ points, activeKeys, brushedRows, pointRenderer, markerLayer, heatMap }) {
   markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
@@ -38,7 +41,7 @@ export function drawPoints({ points, activeKeys, brushedRows, pointRenderer, mar
       `<div class="tooltip_body">
         <div class="tooltip_header">
           <span class="tooltip_dot" style="background:${fillColor}"></span>
-          <strong class="tooltip_title">${row.srTypeDesc}</strong>
+          <strong class="tooltip_title">${SERVICE_TYPE_LABELS.get(row.serviceType) || row.srTypeDesc}</strong>
         </div>
         <dl class="tooltip_details">
           <div class="tooltip_row">

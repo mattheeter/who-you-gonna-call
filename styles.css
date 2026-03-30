@@ -135,6 +135,7 @@ body {
 #map .leaflet-bar a:hover,
 #map .leaflet-control-basemap-toggle:hover,
 #map .leaflet-control-recenter:hover,
+#map .service-type-toggle:hover,
 #map .leaflet-control-brush:hover {
   background: #f1f5f9;
 }
@@ -169,6 +170,70 @@ body {
 
 .map-brush-overlay.is-active {
   pointer-events: auto;
+}
+
+.service-type-selector {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #c8d2e3;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.35;
+  box-sizing: border-box;
+  min-width: 260px;
+  max-width: min(320px, calc(100vw - 48px));
+}
+
+.service-type-toggle {
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: left;
+}
+
+.service-type-panel {
+  padding: 8px;
+  border-top: 1px solid #c8d2e3;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.service-type-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.select-all-btn,
+.deselect-all-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  color: #475569;
+}
+
+.select-all-btn:hover,
+.deselect-all-btn:hover {
+  background: #cbd5e1;
+}
+
+.service-type-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #334155;
+  cursor: pointer;
+}
+
+.service-type-label input {
+  margin-right: 6px;
 }
 
 #map .leaflet-tooltip.map-tooltip {
