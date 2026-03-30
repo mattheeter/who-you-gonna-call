@@ -10,7 +10,7 @@ export const SERVICE_TYPES = [
   { value: "311ASSIT", label: "311 Assitance"},
   { value: "STRSGN", label: "Street Sign Down/Missing"},
   { value: "TRASH-I", label: "Improper Set Out of Trash"},
-  { value: "PLCJUNKV", label: "Abandoned Vehicle"},
+  { value: "PLCJUNKV", label: "Abandogitned Vehicle"},
   { value: "DAPUB1", label: "Dead Animal Removal"},
   { value: "STRTLITE", label: "Street Lighting Repair"}
 ]
