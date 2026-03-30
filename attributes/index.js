@@ -1,4 +1,5 @@
 import { loadServiceRows } from "../map/data.js";
+import { SERVICE_TYPES } from "../map/constants.js";
 
 class FrequencyVis {
   constructor(group_by, id) {
@@ -129,7 +130,7 @@ class FrequencyVis {
   }
 
   async loadData() {
-    this.rows = await loadServiceRows();
+    this.rows = await loadServiceRows(SERVICE_TYPES);
   }
 
   updateVis() {
@@ -143,7 +144,6 @@ class FrequencyVis {
       this.updateVis();
     } catch (error) {
       console.error("Failed to load 311 CSV:", error);
-      this.legendControl.setError("Could not load data file.");
     }
   }
 }
