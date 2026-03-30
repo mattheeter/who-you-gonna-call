@@ -134,7 +134,8 @@ body {
 
 #map .leaflet-bar a:hover,
 #map .leaflet-control-basemap-toggle:hover,
-#map .leaflet-control-recenter:hover {
+#map .leaflet-control-recenter:hover,
+#map .leaflet-control-brush:hover {
   background: #f1f5f9;
 }
 
@@ -143,7 +144,8 @@ body {
 }
 
 #map .leaflet-control-basemap-toggle,
-#map .leaflet-control-recenter {
+#map .leaflet-control-recenter,
+#map .leaflet-control-brush {
   min-width: 72px;
   height: 34px;
   border: 0;
@@ -156,6 +158,17 @@ body {
   font-size: 13px;
   font-weight: 600;
   color: #1e293b;
+}
+
+.map-brush-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 450;
+  pointer-events: none;
+}
+
+.map-brush-overlay.is-active {
+  pointer-events: auto;
 }
 
 #map .leaflet-tooltip.map-tooltip {

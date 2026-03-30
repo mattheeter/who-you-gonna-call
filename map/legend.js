@@ -76,6 +76,9 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
     getMode() {
       return getMode();
     },
+    setModeState(modeState) {
+      currentModeState = modeState;
+    },
     updateModeState(modeState) {
       currentModeState = modeState;
 

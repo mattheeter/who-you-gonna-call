@@ -1,9 +1,29 @@
 import { addBoundariesLayer } from "./boundaries.js";
+import { createBrushController } from "./brush.js";
 import { createMap } from "./controls.js";
 import { loadServiceRows } from "./data.js";
 import { createEncodingModel } from "./encodings.js";
 import { createLegendControl } from "./legend.js";
 import { drawPoints } from "./render.js";
+
+function getBrushedModeState(modeState, brushedRows) {
+  if (!brushedRows) return modeState;
+
+  const countsByKey = modeState.points.reduce((counts, point) => {
+    if (brushedRows.has(point.row)) {
+      counts.set(point.legendKey, (counts.get(point.legendKey) || 0) + 1);
+    }
+    return counts;
+  }, new Map());
+
+  return {
+    ...modeState,
+    entries: modeState.entries.map((entry) => ({
+      ...entry,
+      count: countsByKey.get(entry.key) || 0
+    }))
+  };
+}
 
 class ServiceCallMap {
   constructor() {
@@ -14,6 +34,7 @@ class ServiceCallMap {
     this.heatMap = null;
     this.pointRenderer = null;
     this.legendControl = null;
+    this.brushController = null;
   }
 
   initVis() {
@@ -22,6 +43,10 @@ class ServiceCallMap {
     this.markerLayer = mapState.markerLayer;
     this.heatMap = mapState.heatMap;
     this.pointRenderer = mapState.pointRenderer;
+    this.brushController = createBrushController({
+      map: this.map,
+      onBrushChange: () => this.updateVis()
+    });
 
     this.legendControl = createLegendControl({
       map: this.map,
@@ -40,10 +65,21 @@ class ServiceCallMap {
 
     const modeState = this.encodingModel.getModeState(this.legendControl.getMode());
     const activeKeys = this.legendControl.updateModeState(modeState);
+    const visiblePoints = modeState.points.filter(
+      ({ row, legendKey }) =>
+        activeKeys.has(legendKey) &&
+        row.latitude !== null &&
+        row.longitude !== null
+    );
+    const brushedRows = this.brushController
+      ? this.brushController.setPoints(visiblePoints)
+      : null;
+    this.legendControl.setModeState(getBrushedModeState(modeState, brushedRows));
 
     drawPoints({
       points: modeState.points,
       activeKeys,
+      brushedRows,
       pointRenderer: this.pointRenderer,
       markerLayer: this.markerLayer,
       heatMap: this.heatMap,
