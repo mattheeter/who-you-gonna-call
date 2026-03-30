@@ -73,7 +73,7 @@ class ServiceCallMap {
       activeKeys,
       pointRenderer: this.pointRenderer,
       markerLayer: this.markerLayer,
-      showOnlySelected: this.showOnlySelectedControl.isShowOnlySelected()
+      showOnlySelected: this.showOnlySelectedControl.isShowOnlySelected(),
       heatMap: this.heatMap,
       map: this.map,
     });
