@@ -20,7 +20,7 @@ class ServiceCallMap {
     const mapState = createMap();
     this.map = mapState.map;
     this.markerLayer = mapState.markerLayer;
-    this.heatMap = mapState.heatLayer;
+    this.heatMap = mapState.heatMap;
     this.pointRenderer = mapState.pointRenderer;
 
     this.legendControl = createLegendControl({

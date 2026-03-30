@@ -19,7 +19,7 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer, hea
     if (row.latitude === null || row.longitude === null) return;
 
     const marker = L.circleMarker([row.latitude, row.longitude], {
-      radius: 5,
+      radius: 3,
       color: "#1f2937",
       weight: 0.5,
       opacity: HIGHLIGHT_STROKE_OPACITY,
