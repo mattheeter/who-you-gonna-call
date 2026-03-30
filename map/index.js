@@ -12,7 +12,7 @@ function getBrushedModeState(modeState, brushedRows) {
   if (!brushedRows) return modeState;
 
   const countsByKey = modeState.points.reduce((counts, point) => {
-    if (brushedRows.has(point.row)) {
+    if (brushedRows.has(point.row.rowId)) {
       counts.set(point.legendKey, (counts.get(point.legendKey) || 0) + 1);
     }
     return counts;
@@ -39,6 +39,9 @@ class ServiceCallMap {
     this.brushController = null;
     this.serviceTypeSelectorControl = null;
     this.selectedServiceTypes = ["PTHOLE"];
+    this.selectedRowIds = null; // Set<string> | null
+    this.mapBrushedRowIds = null; // Set<string> | null
+    this.timeEndDate = null; // Date | null
   }
 
   emitServiceTypeSelectionChanged(selectedServiceTypes) {
@@ -47,6 +50,17 @@ class ServiceCallMap {
     window.dispatchEvent(
       new CustomEvent("serviceTypeSelectionChanged", {
         detail: { selectedServiceTypes },
+      })
+    );
+  }
+
+  emitRowSelectionChanged(selectedRowIds) {
+    window.dispatchEvent(
+      new CustomEvent("rowSelectionChanged", {
+        detail: {
+          source: "map",
+          selectedRowIds: selectedRowIds ? Array.from(selectedRowIds) : null
+        }
       })
     );
   }
@@ -81,6 +95,29 @@ class ServiceCallMap {
 
     // Ensure listeners have an initial value even before the control triggers.
     this.emitServiceTypeSelectionChanged(this.selectedServiceTypes);
+
+    window.addEventListener("rowSelectionChanged", (event) => {
+      const { source, selectedRowIds } = event?.detail || {};
+      if (source === "map") return;
+      this.selectedRowIds = Array.isArray(selectedRowIds) ? new Set(selectedRowIds) : null;
+      this.updateVis();
+    });
+
+    window.addEventListener("timeFilterChanged", (event) => {
+      const { endDateIso } = event?.detail || {};
+      this.timeEndDate = endDateIso ? new Date(endDateIso) : null;
+      this.updateVis();
+    });
+
+    window.addEventListener("resetAllFilters", () => {
+      this.selectedRowIds = null;
+      this.timeEndDate = null;
+      if (this.brushController?.clearSelection) {
+        this.brushController.clearSelection();
+      } else {
+        this.updateVis();
+      }
+    });
   }
 
   async loadData() {
@@ -91,9 +128,12 @@ class ServiceCallMap {
   updateVis() {
     if (!this.rows.length) return; // wait until the csv is ready
 
-    const filteredRows = this.rows.filter((row) =>
-      this.selectedServiceTypes.includes(row.serviceType)
-    );
+    const filteredRows = this.rows
+      .filter((row) => this.selectedServiceTypes.includes(row.serviceType))
+      .filter((row) => {
+        if (!this.timeEndDate) return true;
+        return row.createdDate && row.createdDate <= this.timeEndDate;
+      });
 
     if (!filteredRows.length) {
       this.encodingModel = null;
@@ -116,12 +156,14 @@ class ServiceCallMap {
     const brushedRows = this.brushController
       ? this.brushController.setPoints(visiblePoints)
       : null;
+    this.mapBrushedRowIds = brushedRows;
+    const activeRowIds = this.selectedRowIds || this.mapBrushedRowIds;
     this.legendControl.setModeState(getBrushedModeState(modeState, brushedRows));
 
     drawPoints({
       points: modeState.points,
       activeKeys,
-      brushedRows,
+      brushedRows: activeRowIds,
       pointRenderer: this.pointRenderer,
       markerLayer: this.markerLayer,
       heatMap: this.heatMap,
