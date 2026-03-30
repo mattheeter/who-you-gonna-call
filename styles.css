@@ -42,8 +42,8 @@ body {
   font-size: 13px;
   line-height: 1.35;
   width: max-content;
-  max-width: calc(100vw - 32px); /* keep the legend on screen on smaller viewports */
-  max-height: min(252px, 44vh); /* allow long category lists to scroll */
+  max-width: calc(100vw - 32px);
+  max-height: min(252px, 44vh);
   overflow: auto;
   box-sizing: border-box;
 }
@@ -134,7 +134,8 @@ body {
 
 #map .leaflet-bar a:hover,
 #map .leaflet-control-basemap-toggle:hover,
-#map .leaflet-control-recenter:hover {
+#map .leaflet-control-recenter:hover,
+#map .leaflet-control-brush:hover {
   background: #f1f5f9;
 }
 
@@ -143,7 +144,8 @@ body {
 }
 
 #map .leaflet-control-basemap-toggle,
-#map .leaflet-control-recenter {
+#map .leaflet-control-recenter,
+#map .leaflet-control-brush {
   min-width: 72px;
   height: 34px;
   border: 0;
@@ -158,6 +160,19 @@ body {
   color: #1e293b;
 }
 
+/* Brush overlay */
+.map-brush-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 450;
+  pointer-events: none;
+}
+
+.map-brush-overlay.is-active {
+  pointer-events: auto;
+}
+
+/* Show only selected toggle */
 #map .leaflet-control-show-only-selected {
   background: rgba(255, 255, 255, 0.96);
   padding: 8px;
@@ -214,10 +229,11 @@ body {
   font-weight: 500;
 }
 
+/* Tooltips */
 #map .leaflet-tooltip.map-tooltip {
   --map-tooltip-accent: #d1d9e6;
   padding: 0;
-  border: 1px solid var(--map-tooltip-accent); /* match the tooltip border to the marker color */
+  border: 1px solid var(--map-tooltip-accent);
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
   min-width: 220px;
@@ -226,7 +242,7 @@ body {
 }
 
 #map .leaflet-tooltip-top.map-tooltip::before {
-  display: none; /* remove the default leaflet tooltip arrow */
+  display: none;
 }
 
 #map .leaflet-tooltip.map-tooltip .leaflet-tooltip-content {
@@ -234,7 +250,7 @@ body {
   white-space: normal;
 }
 
-.tooltip_container  {
+.tooltip_container {
   position: absolute;
   --map-tooltip-accent: #d1d9e6;
   padding: 0;
@@ -306,7 +322,7 @@ body {
   color: #334155;
   text-align: right;
   min-width: 0;
-  overflow-wrap: anywhere; /* avoid long values overflowing the card */
+  overflow-wrap: anywhere;
 }
 
 /* Service Type Selector */
@@ -368,7 +384,7 @@ body {
 }
 
 .multi-chart-container {
-  display: flex; /* Aligns child elements side by side */
-  justify-content: center; /* Centers the SVGs horizontally (optional) */
-  gap: 20px; /* Adds space between the SVGs (optional) */
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
