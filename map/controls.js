@@ -95,6 +95,13 @@ export function createMap() {
 
   const heatMap = L.heatLayer({ radius: 15 }).addTo(map);
   let heatMapVisible = true;
+  const refreshHeatMap = () => {
+    if (typeof heatMap._reset === "function") {
+      heatMap._reset();
+    } else {
+      heatMap.redraw();
+    }
+  };
 
   const setHeatMapVisibility = (visible) => {
     heatMapVisible = visible;
@@ -102,9 +109,14 @@ export function createMap() {
     if (!heatCanvas) return;
     heatCanvas.style.display = visible ? "" : "none";
     if (visible) {
-      heatMap.redraw();
+      refreshHeatMap();
     }
   };
+
+  map.on("move", () => {
+    if (!heatMapVisible) return;
+    refreshHeatMap();
+  });
 
   const HeatMapToggleControl = createToolbarButtonControl({
     position: "topleft",
