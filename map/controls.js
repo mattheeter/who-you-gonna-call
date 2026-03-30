@@ -93,10 +93,47 @@ export function createMap() {
   map.addControl(new RecenterControl());
   map.addControl(new BasemapToggleControl());
 
+  const heatMap = L.heatLayer({ radius: 15 }).addTo(map);
+  let heatMapVisible = true;
+
+  const setHeatMapVisibility = (visible) => {
+    heatMapVisible = visible;
+    const heatCanvas = heatMap._canvas;
+    if (!heatCanvas) return;
+    heatCanvas.style.display = visible ? "" : "none";
+    if (visible) {
+      heatMap.redraw();
+    }
+  };
+
+  const HeatMapToggleControl = createToolbarButtonControl({
+    position: "topleft",
+    className: "leaflet-control-heatmap-toggle",
+    onCreate: (button) => {
+      button.textContent = "Heatmap";
+      button.title = "Hide heatmap";
+      button.setAttribute("aria-label", "Hide heatmap");
+      button.setAttribute("aria-pressed", "true");
+    },
+    onClick: (button) => {
+      setHeatMapVisibility(!heatMapVisible);
+      if (heatMapVisible) {
+        button.title = "Hide heatmap";
+        button.setAttribute("aria-label", "Hide heatmap");
+        button.setAttribute("aria-pressed", "true");
+      } else {
+        button.title = "Show heatmap";
+        button.setAttribute("aria-label", "Show heatmap");
+        button.setAttribute("aria-pressed", "false");
+      }
+    }
+  });
+  map.addControl(new HeatMapToggleControl());
+
   return {
     map,
     pointRenderer,
     markerLayer: L.layerGroup().addTo(map), // collect all markers in a single replaceable layer
-    heatMap: L.heatLayer({radius: 15}).addTo(map),
+    heatMap
   };
 }
