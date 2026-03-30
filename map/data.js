@@ -35,7 +35,7 @@ export async function loadServiceRows(serviceTypes) {
       methodReceived: methodText
         ? methodText.replace(/\b[a-z]/g, (char) => char.toUpperCase())
         : "Unknown",
-      srTypeDesc: row.SR_TYPE_DESC, // || "POTHOLE, REPAIR", remove later
+      srTypeDesc: row.SR_TYPE_DESC, 
       priority: priorityText ? priorityText.replace(/\b[a-z]/g, (char) => char.toUpperCase()) : "Unknown",
       neighborhood: neighborhoodText
         ? neighborhoodText.replace(/\b[a-z]/g, (char) => char.toUpperCase())
