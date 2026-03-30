@@ -1,5 +1,4 @@
 import { MISSING_VALUE_COLOR, UNKNOWN_CATEGORY_COLOR } from "./constants.js";
-import { SERVICE_TYPES } from "./constants.js";
 
 const { d3 } = window;
 const RESPONSE_MODE = "responseTimeDays";
@@ -68,17 +67,6 @@ const CATEGORY_MODE_CONFIG = {
         "Unknown Agency": UNKNOWN_CATEGORY_COLOR
       });
     }
-  },
-  serviceType: {
-    scaleKey: "serviceTypeScale",
-    rowKey: "serviceType",
-    buildScale(mappedRows) {
-      return buildOrdinalScale(
-        sortedDistinct(mappedRows, "serviceType"),
-        {},
-        CATEGORY_THEME_COLORS
-      );
-    }
   }
 };
 
@@ -121,7 +109,7 @@ function buildCategoryLegendEntries(mode, scales) {
   return categoryScale.domain().map((name) => ({
     key: `cat:${name}`,
     color: categoryScale(name),
-    label: mode === 'serviceType' ? (SERVICE_TYPES.find(s => s.value === name)?.label || name) : name
+    label: name
   }));
 }
 
