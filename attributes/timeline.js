@@ -114,6 +114,95 @@ export class TimelineVis {
       .attr("rx", 2)
       .attr("fill", "#69b3a2");
 
+    // Brush sits above bars and captures pointer events, so bar mouseover rarely fires.
+    // Track pointer on the SVG and show the nearest week's call count in the shared tooltip.
+    const weekTimes = this.data.map((d) => d.weekStart.getTime());
+    const pickNearestWeek = (xDate) => {
+      const t = xDate.getTime();
+      if (!weekTimes.length) return null;
+      let idx = d3.bisectLeft(weekTimes, t);
+      if (idx <= 0) return this.data[0];
+      if (idx >= this.data.length) return this.data[this.data.length - 1];
+      const prev = this.data[idx - 1];
+      const next = this.data[idx];
+      return t - weekTimes[idx - 1] <= weekTimes[idx] - t ? prev : next;
+    };
+
+    const showWeekTooltip = (event, d) => {
+      d3.select("#tooltip")
+        .style("display", "block")
+        .html(
+          `<div class="tooltip_body">
+              <div class="tooltip_header">
+                <span class="tooltip_dot" style="background:#69b3a2"></span>
+                <strong class="tooltip_title">Week of ${formatWeekLabel(d.weekStart)}</strong>
+              </div>
+              <dl class="tooltip_details">
+                <div class="tooltip_row">
+                  <dt>Calls this week</dt><dd>${d.count.toLocaleString()}</dd>
+                </div>
+              </dl>
+            </div>`
+        )
+        .style("border", "1px solid #69b3a2")
+        .style("left", `${event.pageX + 15}px`)
+        .style("top", `${event.pageY + 15}px`);
+    };
+
+    svg
+      .on("mousemove.timeline-tooltip", (event) => {
+        const [mx, my] = d3.pointer(event, g.node());
+        if (mx < 0 || mx > width || my < 0 || my > height) {
+          d3.select("#tooltip").style("display", "none");
+          return;
+        }
+        const xDate = x.invert(mx);
+        const d = pickNearestWeek(xDate);
+        if (!d) return;
+        showWeekTooltip(event, d);
+      })
+      .on("mouseleave.timeline-tooltip", () => {
+        d3.select("#tooltip").style("display", "none");
+      });
+
+    const brushLayer = g.append("g").attr("class", "timeline-brush");
+    const brush = d3.brushX().extent([
+      [0, 0],
+      [width, height]
+    ]).on("start brush end", ({ selection, type }) => {
+      if (!selection) {
+        if (type === "end") {
+          window.dispatchEvent(
+            new CustomEvent("rowSelectionChanged", {
+              detail: { source: "timeline", selectedRowIds: null }
+            })
+          );
+        }
+        return;
+      }
+
+      const [x0, x1] = selection;
+      const start = x.invert(x0);
+      const end = x.invert(x1);
+
+      if (type === "end") {
+        const selectedRowIds = new Set();
+        this.rows.forEach((row) => {
+          if (!row.createdDate || !row.rowId) return;
+          if (row.createdDate >= start && row.createdDate <= end) {
+            selectedRowIds.add(row.rowId);
+          }
+        });
+
+        window.dispatchEvent(
+          new CustomEvent("rowSelectionChanged", {
+            detail: { source: "timeline", selectedRowIds: Array.from(selectedRowIds) }
+          })
+        );
+      }
+    });
+    brushLayer.call(brush);
+
     if (this.missingCreatedDateCount > 0) {
       svg
         .append("text")
@@ -123,33 +212,6 @@ export class TimelineVis {
         .text(`${this.missingCreatedDateCount} calls missing DATE_CREATED (excluded from timeline).`);
     }
 
-    bars
-      .on("mouseover", (event, d) => {
-        d3.select("#tooltip")
-          .style("display", "block")
-          .html(
-            `<div class="tooltip_body">
-              <div class="tooltip_header">
-                <span class="tooltip_dot" style="background:#69b3a2"></span>
-                <strong class="tooltip_title">Week of ${formatWeekLabel(d.weekStart)}</strong>
-              </div>
-              <dl class="tooltip_details">
-                <div class="tooltip_row">
-                  <dt>NUMBER OF CALLS</dt><dd>${d.count}</dd>
-                </div>
-              </dl>
-            </div>`
-          )
-          .style("border", "1px solid #69b3a2");
-      })
-      .on("mousemove", (event) => {
-        d3.select("#tooltip")
-          .style("left", `${event.pageX + 15}px`)
-          .style("top", `${event.pageY + 15}px`);
-      })
-      .on("mouseout", () => {
-        d3.select("#tooltip").style("display", "none");
-      });
   }
 }
 

@@ -26,20 +26,20 @@ function setMapNavigationEnabled(map, isEnabled) {
   }
 }
 
-function getSelectedRows(selection, points, map) {
+function getSelectedRowIds(selection, points, map) {
   if (!selection) return null;
 
   const [[x0, y0], [x1, y1]] = selection;
-  const selectedRows = new Set();
+  const selectedRowIds = new Set();
 
   points.forEach(({ row }) => {
     const point = map.latLngToContainerPoint([row.latitude, row.longitude]);
     if (point.x >= x0 && point.x <= x1 && point.y >= y0 && point.y <= y1) {
-      selectedRows.add(row);
+      if (row.rowId) selectedRowIds.add(row.rowId);
     }
   });
 
-  return selectedRows;
+  return selectedRowIds;
 }
 
 export function createBrushController({ map, onBrushChange }) {
@@ -66,6 +66,15 @@ export function createBrushController({ map, onBrushChange }) {
     selection = nextSelection
       ? nextSelection.map(([x, y]) => [x, y])
       : null;
+    const selectedRowIds = getSelectedRowIds(selection, points, map);
+    window.dispatchEvent(
+      new CustomEvent("rowSelectionChanged", {
+        detail: {
+          source: "map",
+          selectedRowIds: selectedRowIds ? Array.from(selectedRowIds) : null
+        }
+      })
+    );
     onBrushChange();
   });
 
@@ -129,7 +138,12 @@ export function createBrushController({ map, onBrushChange }) {
   return {
     setPoints(nextPoints) {
       points = nextPoints;
-      return getSelectedRows(selection, points, map);
+      return getSelectedRowIds(selection, points, map);
+    },
+    clearSelection() {
+      selection = null;
+      brushLayer.call(brush.move, null);
+      onBrushChange();
     }
   };
 }

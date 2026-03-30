@@ -35,6 +35,39 @@ body {
   color: #475569;
 }
 
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 10px;
+}
+
+.panel-action-btn {
+  appearance: none;
+  border: 1px solid #b5c3d8;
+  background: #f8fafc;
+  color: #0f172a;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.panel-action-btn:hover {
+  background: #eef2f7;
+}
+
+.panel-action-btn:active {
+  transform: translateY(1px);
+}
+
+.panel-action-status {
+  font-size: 12px;
+  color: #64748b;
+}
+
 .timeline-svg .timeline-axis path,
 .timeline-svg .timeline-axis line {
   stroke: #cbd5e1;

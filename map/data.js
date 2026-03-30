@@ -30,6 +30,7 @@ export async function loadServiceRows(serviceTypes = SERVICE_TYPES) {
     const methodText = (row.METHOD_RECEIVED || "Unknown").trim().toLowerCase();
 
     return {
+      rowId: row.SR_NUMBER,
       serviceType: row.SR_TYPE,
       methodReceived: methodText
         ? methodText.replace(/\b[a-z]/g, (char) => char.toUpperCase())
