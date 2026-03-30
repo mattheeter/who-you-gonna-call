@@ -3,11 +3,21 @@ import { SERVICE_TYPES } from "./constants.js";
 
 const { L } = window;
 
-export function drawPoints({ points, activeKeys, pointRenderer, markerLayer, showOnlySelected = false }) {
-  markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
 
+export function drawPoints({ points, activeKeys, pointRenderer, markerLayer, heatMap, showOnlySelected = false }) {
+  markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
+ 
   const selectedMarkers = [];
   const deselectedMarkers = [];
+ 
+  // Build heatmap lat/lngs from active points
+  const latLngs = [];
+  points.forEach(({ row, legendKey }) => {
+    if (!activeKeys.has(legendKey)) return;
+    if (row.latitude === null || row.longitude === null) return;
+    latLngs.push([row.latitude, row.longitude]);
+  });
+  heatMap.setLatLngs(latLngs);
 
   points.forEach(({ row, fillColor, legendKey }) => {
     if (row.latitude === null || row.longitude === null) return;
@@ -37,26 +47,26 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer, sho
           <span class="map-tooltip__dot" style="background:${finalFillColor}"></span>
           <strong class="map-tooltip__title">${SERVICE_TYPES.find(s => s.value === row.serviceType)?.label || row.srTypeDesc}</strong>
         </div>
-        <dl class="map-tooltip__details">
-          <div class="map-tooltip__row">
+        <dl class="tooltip_details">
+          <div class="tooltip_row">
             <dt>Neighborhood</dt><dd>${row.neighborhood}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Agency</dt><dd>${row.agency}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Method received</dt><dd>${row.methodReceived}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Priority</dt><dd>${row.priority}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Resolution</dt><dd>${timeText}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Created</dt><dd>${row.createdDateLabel}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Updated</dt><dd>${row.updatedDateLabel}</dd>
           </div>
         </dl>
