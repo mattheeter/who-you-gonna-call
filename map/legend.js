@@ -30,7 +30,14 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
       }
     });
 
-    return activeKeys.size ? activeKeys : new Set(validKeys);
+    // Add new valid keys that weren't previously active
+    validKeys.forEach((key) => {
+      if (!existingKeys.has(key)) {
+        activeKeys.add(key);
+      }
+    });
+
+    return activeKeys;
   }
 
   legend.onAdd = function onAdd() {
@@ -154,12 +161,20 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
           part.className === "legend-dot" ? part.value : null
         )
         .text((part) =>
-          part.className === "legend-dot" ? "" : String(part.value)
+          part.className === "legend-dot" ? "" : 
+          part.className === "legend-count" ? part.value.toLocaleString() : 
+          String(part.value)
         );
     },
     setError(message) {
       currentModeState = null;
       statusElement.textContent = message;
+      rowsSelection.selectAll("button.legend-row").remove();
+      unmappedElement.textContent = "";
+    },
+    setNoPoints() {
+      currentModeState = null;
+      statusElement.textContent = "No points are shown";
       rowsSelection.selectAll("button.legend-row").remove();
       unmappedElement.textContent = "";
     }

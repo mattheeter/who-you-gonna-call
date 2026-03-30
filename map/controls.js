@@ -22,6 +22,45 @@ function createToolbarButtonControl({ position, className, onCreate, onClick }) 
   });
 }
 
+export function createShowOnlySelectedControl({ map, onToggle }) {
+  let showOnlySelected = true;
+
+  const ShowOnlySelectedControl = L.Control.extend({
+    options: { position: "bottomleft" },
+    onAdd() {
+      const container = L.DomUtil.create("div", "leaflet-control-show-only-selected");
+      const label = L.DomUtil.create("label", "switch-label", container);
+      const checkbox = L.DomUtil.create("input", "", label);
+      checkbox.type = "checkbox";
+      checkbox.checked = false;
+      checkbox.setAttribute("aria-label", "Show unselected points");
+
+      const slider = L.DomUtil.create("span", "switch-slider", label);
+      const text = L.DomUtil.create("span", "switch-text", label);
+      text.textContent = "Show unselected points";
+
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
+
+      checkbox.addEventListener("change", () => {
+        showOnlySelected = !checkbox.checked;
+        onToggle(showOnlySelected);
+      });
+
+      this._div = container;
+      return container;
+    }
+  });
+
+  map.addControl(new ShowOnlySelectedControl());
+
+  return {
+    isShowOnlySelected() {
+      return showOnlySelected;
+    }
+  };
+}
+
 export function createMap() {
   const map = L.map("map", {
     center: CINCINNATI_CENTER,
@@ -99,4 +138,6 @@ export function createMap() {
     markerLayer: L.layerGroup().addTo(map), // collect all markers in a single replaceable layer
     heatMap: L.heatLayer({radius: 15}).addTo(map),
   };
+  //
 }
+
