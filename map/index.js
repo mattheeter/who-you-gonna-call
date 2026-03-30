@@ -41,6 +41,16 @@ class ServiceCallMap {
     this.selectedServiceTypes = ["PTHOLE"];
   }
 
+  emitServiceTypeSelectionChanged(selectedServiceTypes) {
+    // Shared selection state for the attribute viewer (charts).
+    window.__selectedServiceTypes = selectedServiceTypes;
+    window.dispatchEvent(
+      new CustomEvent("serviceTypeSelectionChanged", {
+        detail: { selectedServiceTypes },
+      })
+    );
+  }
+
   initVis() {
     const mapState = createMap();
     this.map = mapState.map;
@@ -63,10 +73,14 @@ class ServiceCallMap {
       initialSelected: this.selectedServiceTypes,
       onSelectionChange: (selectedServiceTypes) => {
         this.selectedServiceTypes = selectedServiceTypes;
+        this.emitServiceTypeSelectionChanged(selectedServiceTypes);
         this.updateVis();
       }
     });
     this.serviceTypeSelectorControl.addTo(this.map);
+
+    // Ensure listeners have an initial value even before the control triggers.
+    this.emitServiceTypeSelectionChanged(this.selectedServiceTypes);
   }
 
   async loadData() {

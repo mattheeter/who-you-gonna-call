@@ -53,6 +53,20 @@ export class TimelineVis {
     const width = outerWidth - margin.left - margin.right;
     const height = outerHeight - margin.top - margin.bottom;
 
+    if (!this.data.length) {
+      container
+        .append("div")
+        .attr("class", "timeline-empty")
+        .style("color", "#94a3b8")
+        .style("padding", "12px")
+        .text(
+          this.missingCreatedDateCount > 0
+            ? `${this.missingCreatedDateCount} calls missing DATE_CREATED (excluded from timeline).`
+            : "No timeline data for selected service types."
+        );
+      return;
+    }
+
     const svg = container
       .append("svg")
       .attr("class", "timeline-svg")
@@ -98,7 +112,7 @@ export class TimelineVis {
       .attr("width", barWidth)
       .attr("height", (d) => height - y(d.count))
       .attr("rx", 2)
-      .attr("fill", "#64748b");
+      .attr("fill", "#69b3a2");
 
     if (this.missingCreatedDateCount > 0) {
       svg
@@ -116,7 +130,7 @@ export class TimelineVis {
           .html(
             `<div class="tooltip_body">
               <div class="tooltip_header">
-                <span class="tooltip_dot" style="background:#64748b"></span>
+                <span class="tooltip_dot" style="background:#69b3a2"></span>
                 <strong class="tooltip_title">Week of ${formatWeekLabel(d.weekStart)}</strong>
               </div>
               <dl class="tooltip_details">
@@ -126,7 +140,7 @@ export class TimelineVis {
               </dl>
             </div>`
           )
-          .style("border", "1px solid #64748b");
+          .style("border", "1px solid #69b3a2");
       })
       .on("mousemove", (event) => {
         d3.select("#tooltip")

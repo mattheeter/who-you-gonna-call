@@ -10,6 +10,9 @@ class FrequencyVis {
   }
 
   initVis() {
+    // Redraw from scratch so selection changes don't stack duplicate charts.
+    d3.select(this.id).selectAll("*").remove();
+
     var margin = {top: 20, right: 30, bottom: 40, left: 150},
       width = 350 - margin.left - margin.right,
       height = 600 - margin.top - margin.bottom;
@@ -29,6 +32,16 @@ class FrequencyVis {
 
     // Sort in descending order
     this.data.sort((f, s) => s.value - f.value);
+
+    if (!this.data.length) {
+      d3.select(this.id)
+        .append("div")
+        .attr("class", "chart-empty")
+        .style("color", "#94a3b8")
+        .style("padding", "12px")
+        .text("No data for selected service types.");
+      return;
+    }
 
     this.svg = d3.select(this.id)
       .append("svg")
@@ -150,22 +163,50 @@ class FrequencyVis {
 }
 
 export async function initializeAttributeViews() {
-  const rows = await loadServiceRows();
+  const allRows = await loadServiceRows(SERVICE_TYPES);
 
   const timeline = new TimelineVis({ id: "#timeline" });
-  timeline.setRows(rows);
-  timeline.initVis();
 
   const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq");
-  neighborhoodFreq.rows = rows;
-  neighborhoodFreq.initVis();
   const receivedFreq = new FrequencyVis("methodReceived", "#received_freq");
-  receivedFreq.rows = rows;
-  receivedFreq.initVis();
   const deptFreq = new FrequencyVis("agency", "#dept_freq");
-  deptFreq.rows = rows;
-  deptFreq.initVis();
   const priorityFreq = new FrequencyVis("priority", "#priority_freq");
-  priorityFreq.rows = rows;
-  priorityFreq.initVis();
+
+  const getInitialSelectedServiceTypes = () => {
+    const selected = window.__selectedServiceTypes;
+    if (Array.isArray(selected) && selected.length) return selected;
+    return SERVICE_TYPES.map((s) => s.value);
+  };
+
+  let selectedServiceTypes = getInitialSelectedServiceTypes();
+
+  const render = () => {
+    const filteredRows = allRows.filter((row) =>
+      selectedServiceTypes.includes(row.serviceType)
+    );
+
+    timeline.setRows(filteredRows);
+    timeline.initVis();
+
+    neighborhoodFreq.rows = filteredRows;
+    neighborhoodFreq.initVis();
+
+    receivedFreq.rows = filteredRows;
+    receivedFreq.initVis();
+
+    deptFreq.rows = filteredRows;
+    deptFreq.initVis();
+
+    priorityFreq.rows = filteredRows;
+    priorityFreq.initVis();
+  };
+
+  render();
+
+  window.addEventListener("serviceTypeSelectionChanged", (event) => {
+    const next = event?.detail?.selectedServiceTypes;
+    if (!Array.isArray(next)) return;
+    selectedServiceTypes = next;
+    render();
+  });
 }
