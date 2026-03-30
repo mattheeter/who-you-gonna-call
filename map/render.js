@@ -1,22 +1,27 @@
-import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY } from "./constants.js";
+import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY, SERVICE_TYPES } from "./constants.js";
 
 const { L } = window;
+const SERVICE_TYPE_LABELS = new Map(
+  SERVICE_TYPES.map((serviceType) => [serviceType.value, serviceType.label])
+);
 
-export function drawPoints({ points, activeKeys, pointRenderer, markerLayer, heatMap }) {
+export function drawPoints({ points, activeKeys, brushedRows, pointRenderer, markerLayer, heatMap }) {
   markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
 
   var latLngs = Array();
   points.forEach(({ row, fillColor, legendKey }) => {
     if (!activeKeys.has(legendKey)) return;
     if (row.latitude === null || row.longitude === null) return;
+    if (brushedRows && !brushedRows.has(row)) return;
     latLngs.push([row.latitude, row.longitude]);
   });
-  heatMap.setLatLngs(latLngs)
+  heatMap.setLatLngs(latLngs);
 
 
   points.forEach(({ row, fillColor, legendKey }) => {
     if (!activeKeys.has(legendKey)) return;
     if (row.latitude === null || row.longitude === null) return;
+    if (brushedRows && !brushedRows.has(row)) return;
 
     const marker = L.circleMarker([row.latitude, row.longitude], {
       radius: 3,
@@ -36,7 +41,7 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer, hea
       `<div class="tooltip_body">
         <div class="tooltip_header">
           <span class="tooltip_dot" style="background:${fillColor}"></span>
-          <strong class="tooltip_title">${row.srTypeDesc}</strong>
+          <strong class="tooltip_title">${SERVICE_TYPE_LABELS.get(row.serviceType) || row.srTypeDesc}</strong>
         </div>
         <dl class="tooltip_details">
           <div class="tooltip_row">

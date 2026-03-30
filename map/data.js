@@ -1,4 +1,4 @@
-import { DATA_URL, SERVICE_TYPE } from "./constants.js";
+import { DATA_URL, SERVICE_TYPES } from "./constants.js";
 
 const { d3 } = window;
 const parseDate = d3.utcParse("%Y %b %d %I:%M:%S %p"); // treat exported dates as calendar days so DST does not create fractional durations
@@ -17,10 +17,11 @@ function parseCoordinate(value) {
   return Number.isFinite(coordinate) ? coordinate : null;
 }
 
-export async function loadServiceRows() {
+export async function loadServiceRows(serviceTypes = SERVICE_TYPES) {
   const rows = await d3.csv(DATA_URL);
+  const validTypes = new Set(serviceTypes.map((serviceType) => serviceType.value));
 
-  return rows.filter((row) => row.SR_TYPE === SERVICE_TYPE).map((row) => {
+  return rows.filter((row) => validTypes.has(row.SR_TYPE)).map((row) => {
     const createdDate = parseDate(row.DATE_CREATED);
     const updatedDate = parseDate(row.DATE_LAST_UPDATE);
     const priorityText = (row.PRIORITY || "Unknown").trim().toLowerCase(); // normalize inconsistent csv casing
@@ -29,6 +30,7 @@ export async function loadServiceRows() {
     const methodText = (row.METHOD_RECEIVED || "Unknown").trim().toLowerCase();
 
     return {
+      serviceType: row.SR_TYPE,
       methodReceived: methodText
         ? methodText.replace(/\b[a-z]/g, (char) => char.toUpperCase())
         : "Unknown",

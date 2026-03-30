@@ -1,4 +1,4 @@
-import { COLOR_BY_OPTIONS } from "./constants.js";
+import { COLOR_BY_OPTIONS, DEFAULT_COLOR_BY_MODE } from "./constants.js";
 
 const { d3, L } = window;
 
@@ -30,6 +30,12 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
       }
     });
 
+    validKeys.forEach((key) => {
+      if (!existingKeys.has(key)) {
+        activeKeys.add(key);
+      }
+    });
+
     return activeKeys.size ? activeKeys : new Set(validKeys);
   }
 
@@ -45,6 +51,8 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
       optionEl.textContent = option.label;
       select.appendChild(optionEl);
     });
+
+    select.value = DEFAULT_COLOR_BY_MODE;
 
     colorBySelect = select;
     statusElement = L.DomUtil.create("div", "legend-status", legendBox);
@@ -75,6 +83,9 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
   return {
     getMode() {
       return getMode();
+    },
+    setModeState(modeState) {
+      currentModeState = modeState;
     },
     updateModeState(modeState) {
       currentModeState = modeState;
@@ -154,12 +165,20 @@ export function createLegendControl({ map, onModeChange, onLegendClick }) {
           part.className === "legend-dot" ? part.value : null
         )
         .text((part) =>
-          part.className === "legend-dot" ? "" : String(part.value)
+          part.className === "legend-dot" ? "" :
+          part.className === "legend-count" ? Number(part.value).toLocaleString() :
+          String(part.value)
         );
     },
     setError(message) {
       currentModeState = null;
       statusElement.textContent = message;
+      rowsSelection.selectAll("button.legend-row").remove();
+      unmappedElement.textContent = "";
+    },
+    setNoPoints() {
+      currentModeState = null;
+      statusElement.textContent = "No points are shown";
       rowsSelection.selectAll("button.legend-row").remove();
       unmappedElement.textContent = "";
     }
