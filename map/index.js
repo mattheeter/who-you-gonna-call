@@ -11,6 +11,7 @@ class ServiceCallMap {
     this.encodingModel = null;
     this.map = null;
     this.markerLayer = null;
+    this.heatMap = null;
     this.pointRenderer = null;
     this.legendControl = null;
   }
@@ -19,6 +20,7 @@ class ServiceCallMap {
     const mapState = createMap();
     this.map = mapState.map;
     this.markerLayer = mapState.markerLayer;
+    this.heatMap = mapState.heatMap;
     this.pointRenderer = mapState.pointRenderer;
 
     this.legendControl = createLegendControl({
@@ -43,7 +45,9 @@ class ServiceCallMap {
       points: modeState.points,
       activeKeys,
       pointRenderer: this.pointRenderer,
-      markerLayer: this.markerLayer
+      markerLayer: this.markerLayer,
+      heatMap: this.heatMap,
+      map: this.map,
     });
     this.legendControl.render();
   }

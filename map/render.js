@@ -2,15 +2,24 @@ import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY } from "./constants.js
 
 const { L } = window;
 
-export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
+export function drawPoints({ points, activeKeys, pointRenderer, markerLayer, heatMap }) {
   markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
+
+  var latLngs = Array();
+  points.forEach(({ row, fillColor, legendKey }) => {
+    if (!activeKeys.has(legendKey)) return;
+    if (row.latitude === null || row.longitude === null) return;
+    latLngs.push([row.latitude, row.longitude]);
+  });
+  heatMap.setLatLngs(latLngs)
+
 
   points.forEach(({ row, fillColor, legendKey }) => {
     if (!activeKeys.has(legendKey)) return;
     if (row.latitude === null || row.longitude === null) return;
 
     const marker = L.circleMarker([row.latitude, row.longitude], {
-      radius: 5,
+      radius: 3,
       color: "#1f2937",
       weight: 0.5,
       opacity: HIGHLIGHT_STROKE_OPACITY,

@@ -96,6 +96,7 @@ export function createMap() {
   return {
     map,
     pointRenderer,
-    markerLayer: L.layerGroup().addTo(map) // collect all markers in a single replaceable layer
+    markerLayer: L.layerGroup().addTo(map), // collect all markers in a single replaceable layer
+    heatMap: L.heatLayer({radius: 15}).addTo(map),
   };
 }
