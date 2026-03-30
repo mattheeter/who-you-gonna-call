@@ -38,6 +38,8 @@ export async function loadServiceRows() {
         ? neighborhoodText.replace(/\b[a-z]/g, (char) => char.toUpperCase())
         : "Unknown Neighborhood",
       agency: agencyText ? agencyText.replace(/\b[a-z]/g, (char) => char.toUpperCase()) : "Unknown Agency",
+      createdDate,
+      updatedDate,
       createdDateLabel: usDateFormatter.format(createdDate),
       updatedDateLabel: usDateFormatter.format(updatedDate),
       responseTimeDays:

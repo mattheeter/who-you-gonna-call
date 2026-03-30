@@ -1,4 +1,5 @@
 import { loadServiceRows } from "../map/data.js";
+import { TimelineVis } from "./timeline.js";
 
 class FrequencyVis {
   constructor(group_by, id) {
@@ -149,12 +150,22 @@ class FrequencyVis {
 }
 
 export async function initializeAttributeViews() {
+  const rows = await loadServiceRows();
+
+  const timeline = new TimelineVis({ id: "#timeline" });
+  timeline.setRows(rows);
+  timeline.initVis();
+
   const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq");
-  await neighborhoodFreq.initialize();
+  neighborhoodFreq.rows = rows;
+  neighborhoodFreq.initVis();
   const receivedFreq = new FrequencyVis("methodReceived", "#received_freq");
-  await receivedFreq.initialize();
+  receivedFreq.rows = rows;
+  receivedFreq.initVis();
   const deptFreq = new FrequencyVis("agency", "#dept_freq");
-  await deptFreq.initialize();
+  deptFreq.rows = rows;
+  deptFreq.initVis();
   const priorityFreq = new FrequencyVis("priority", "#priority_freq");
-  await priorityFreq.initialize();
+  priorityFreq.rows = rows;
+  priorityFreq.initVis();
 }
