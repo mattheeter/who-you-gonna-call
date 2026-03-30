@@ -24,31 +24,31 @@ export function drawPoints({ points, activeKeys, pointRenderer, markerLayer }) {
         : `${row.responseTimeDays} ${row.responseTimeDays === 1 ? "day" : "days"}`;
 
     marker.bindTooltip(
-      `<div class="map-tooltip__body">
-        <div class="map-tooltip__header">
-          <span class="map-tooltip__dot" style="background:${fillColor}"></span>
-          <strong class="map-tooltip__title">${row.srTypeDesc}</strong>
+      `<div class="tooltip_body">
+        <div class="tooltip_header">
+          <span class="tooltip_dot" style="background:${fillColor}"></span>
+          <strong class="tooltip_title">${row.srTypeDesc}</strong>
         </div>
-        <dl class="map-tooltip__details">
-          <div class="map-tooltip__row">
+        <dl class="tooltip_details">
+          <div class="tooltip_row">
             <dt>Neighborhood</dt><dd>${row.neighborhood}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Agency</dt><dd>${row.agency}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Method received</dt><dd>${row.methodReceived}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Priority</dt><dd>${row.priority}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Resolution</dt><dd>${timeText}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Created</dt><dd>${row.createdDateLabel}</dd>
           </div>
-          <div class="map-tooltip__row">
+          <div class="tooltip_row">
             <dt>Updated</dt><dd>${row.updatedDateLabel}</dd>
           </div>
         </dl>
