@@ -2,8 +2,7 @@
 Project code for CS5124 - Project 2: Who you gonna call? 3-1-1!
 
 ## Motivation 
-
- 
+To help people quickly understand where, when, and what kinds of 311 issues are happening in Cincinnati, using linked map + timeline + attribute views so they can explore patterns (hotspots, seasonality, and which departments/priorities are involved) instead of scanning raw records.
 
 ## Data 
 
@@ -33,19 +32,30 @@ The app is a coordinated multiple-views (CMV) dashboard with six linked views:
 #### Views
 
 Map (Leaflet): plots calls by lattitude/longitude with a heat layer and boundary overlay. Supports service type filtering, legend-based color encoding, and rectangle brushing by SR_NUMBER.
+<img width="1101" height="692" alt="Screenshot 2026-03-31 at 3 47 09 PM" src="https://github.com/user-attachments/assets/2dd2b6fe-ffc3-4504-b7b4-230e66aaa60e" />
 
 Timeline: weekly bar chart of call volume. Supports hover tooltips, x-axis brush (filters all views), and a Play/Pause animation that sweeps through all calls in the year in ~30 seconds.
+<img width="1100" height="146" alt="Screenshot 2026-03-31 at 3 47 27 PM" src="https://github.com/user-attachments/assets/0387ab1b-98ff-45f5-9458-53535b475c08" />
+
 
 4 Attribute Charts (horizontal bar charts): Neighborhood, Method Received, Agency, and Priority. Each supports hover tooltips and y-axis brushing to filter all other views.
+<img width="1379" height="275" alt="Screenshot 2026-03-31 at 3 47 42 PM" src="https://github.com/user-attachments/assets/c507e731-e030-4925-b4bd-7d1aadb2c59b" />
+<img width="308" height="347" alt="Screenshot 2026-03-31 at 3 47 51 PM" src="https://github.com/user-attachments/assets/a8608258-8af0-4565-9791-f8c773e7b8de" />
 
 Interactions are fully linked — brushing any view (map, timeline, or attribute chart) filters all others. Reset clears all selections.
+
+<img width="746" height="705" alt="Screenshot 2026-03-31 at 3 48 38 PM" src="https://github.com/user-attachments/assets/7a208983-3165-4408-96fd-c764d9c9da12" />
 
 ## Discovery 
 
 Spatial hotspots shift by service type — toggling categories moves density clusters across the city.
-Seasonal patterns — some categories (e.g., snow/ice/trash pickups) spike in winter; others are uniform.
-High-priority late-year requests cluster in specific areas/agencies when Priority + timeline brushes are combined.
-Agency and submission method composition varies noticeably between brushed spatial regions (e.g., downtown vs. residential).
+Eg: Overtime parking requests cluster in Clifton/Downtown Cincinnati as seen below: 
+<img width="859" height="567" alt="Screenshot 2026-03-31 at 3 51 14 PM" src="https://github.com/user-attachments/assets/eed93d31-c35f-4035-b754-f52eade9f15f" />
+
+Seasonal patterns — some categories (e.g., snow/ice/trash pickups) spike in winter; others are uniform. Almost all of slippery streets requests were made in January. 
+
+<img width="693" height="137" alt="Screenshot 2026-03-31 at 3 51 39 PM" src="https://github.com/user-attachments/assets/db4ed64b-9f75-47d7-a648-dcd9f1eefadd" />
+
 
 ## Process 
 
@@ -57,7 +67,7 @@ Matt
 
 ## AI and Collaboration 
 
-Soham -  
+Soham - I used Cursor to help me write the documentation for this project as well as helping me with the animating the timeline for the Level 8 goal. I also used Claude Code for some debugging as I find it better with debugging single files as Cursor can get confused with the project context sometimes. 
 
 Matt -  
 
