@@ -14,6 +14,81 @@ body {
   background: #fff;
 }
 
+.panel {
+  margin-top: 18px;
+  padding: 14px 14px 10px;
+  background: #fff;
+  border: 1px solid #d6dde8;
+  border-radius: 10px;
+}
+
+.panel-title {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.panel-subtitle {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 10px;
+}
+
+.panel-action-btn {
+  appearance: none;
+  border: 1px solid #b5c3d8;
+  background: #f8fafc;
+  color: #0f172a;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.panel-action-btn:hover {
+  background: #eef2f7;
+}
+
+.panel-action-btn:active {
+  transform: translateY(1px);
+}
+
+.panel-action-status {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.timeline-svg .timeline-axis path,
+.timeline-svg .timeline-axis line {
+  stroke: #cbd5e1;
+}
+
+.timeline-svg .timeline-axis text {
+  fill: #475569;
+  font-size: 11.5px;
+}
+
+.timeline-axis-label {
+  fill: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.timeline-note {
+  fill: #64748b;
+  font-size: 12px;
+}
+
 #map.leaflet-container:focus,
 #map svg,
 #map canvas {

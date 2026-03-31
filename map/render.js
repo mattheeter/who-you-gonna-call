@@ -12,7 +12,7 @@ export function drawPoints({ points, activeKeys, brushedRows, pointRenderer, mar
   points.forEach(({ row, fillColor, legendKey }) => {
     if (!activeKeys.has(legendKey)) return;
     if (row.latitude === null || row.longitude === null) return;
-    if (brushedRows && !brushedRows.has(row)) return;
+    if (brushedRows && !brushedRows.has(row.rowId)) return;
     latLngs.push([row.latitude, row.longitude]);
   });
   heatMap.setLatLngs(latLngs);
@@ -21,7 +21,7 @@ export function drawPoints({ points, activeKeys, brushedRows, pointRenderer, mar
   points.forEach(({ row, fillColor, legendKey }) => {
     if (!activeKeys.has(legendKey)) return;
     if (row.latitude === null || row.longitude === null) return;
-    if (brushedRows && !brushedRows.has(row)) return;
+    if (brushedRows && !brushedRows.has(row.rowId)) return;
 
     const marker = L.circleMarker([row.latitude, row.longitude], {
       radius: 3,

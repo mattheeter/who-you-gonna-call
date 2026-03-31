@@ -15,6 +15,17 @@
   <body>
     <div id="map" aria-label="Map of 311 call hotspots"></div>
 
+    <section class="panel" aria-label="311 calls over time">
+      <h2 class="panel-title">Calls over the year</h2>
+      <p class="panel-subtitle">Weekly count of requests created (your selected service type).</p>
+      <div class="panel-actions" aria-label="Visualization controls">
+        <button id="reset-filters" type="button" class="panel-action-btn">Reset</button>
+        <button id="play-timeline" type="button" class="panel-action-btn">Play</button>
+        <span id="play-timeline-status" class="panel-action-status" aria-live="polite"></span>
+      </div>
+      <div id="timeline"></div>
+    </section>
+
     <div class="multi-chart-container">
         <div id="neighborhood_freq"></div>
         <div id="received_freq"></div>
