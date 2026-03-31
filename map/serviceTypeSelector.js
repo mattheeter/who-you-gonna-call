@@ -16,6 +16,11 @@ export function createServiceTypeSelectorControl({ map, onSelectionChange, initi
     const panel = L.DomUtil.create("div", "service-type-panel", container);
     panel.style.display = "none";
 
+    const setPanelOpen = (open) => {
+      panel.style.display = open ? "block" : "none";
+      container.classList.toggle("service-type-panel-open", open);
+    };
+
     const actions = L.DomUtil.create("div", "service-type-actions", panel);
     const selectAllButton = L.DomUtil.create("button", "select-all-btn", actions);
     selectAllButton.type = "button";
@@ -25,19 +30,28 @@ export function createServiceTypeSelectorControl({ map, onSelectionChange, initi
     deselectAllButton.type = "button";
     deselectAllButton.textContent = "Deselect All";
 
+    const rows = L.DomUtil.create("div", "service-type-rows", panel);
+
     const checkboxes = [];
 
     SERVICE_TYPES.forEach((serviceType) => {
-      const label = L.DomUtil.create("label", "service-type-label", panel);
-      const checkbox = L.DomUtil.create("input", "", label);
+      const label = L.DomUtil.create("label", "service-type-row", rows);
+      const checkbox = L.DomUtil.create("input", "service-type-checkbox", label);
       checkbox.type = "checkbox";
       checkbox.value = serviceType.value;
       checkbox.checked = initialSelected.includes(serviceType.value);
-      label.appendChild(document.createTextNode(` ${serviceType.label}`));
+
+      const labelText = L.DomUtil.create("span", "service-type-row-label", label);
+      labelText.textContent = serviceType.label;
+
+      const countSpan = L.DomUtil.create("span", "service-type-row-count", label);
+      countSpan.textContent = "0";
 
       checkboxes.push(checkbox);
       labels.push({
         label,
+        labelText,
+        countSpan,
         type: serviceType.value,
         originalText: serviceType.label
       });
@@ -48,7 +62,7 @@ export function createServiceTypeSelectorControl({ map, onSelectionChange, initi
 
     L.DomEvent.on(button, "click", (event) => {
       L.DomEvent.stop(event);
-      panel.style.display = panel.style.display === "none" ? "block" : "none";
+      setPanelOpen(panel.style.display === "none");
     });
 
     const updateSelection = () => {
@@ -95,8 +109,9 @@ export function createServiceTypeSelectorControl({ map, onSelectionChange, initi
       }
     });
 
-    labels.forEach(({ label, type, originalText }) => {
-      label.lastChild.textContent = ` ${originalText} (${counts[type].toLocaleString()})`;
+    labels.forEach(({ labelText, countSpan, type, originalText }) => {
+      labelText.textContent = originalText;
+      countSpan.textContent = counts[type].toLocaleString();
     });
   };
 
