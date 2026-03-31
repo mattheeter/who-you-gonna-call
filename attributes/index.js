@@ -2,16 +2,23 @@ import { loadServiceRows } from "../map/data.js";
 import { SERVICE_TYPES } from "../map/constants.js";
 
 class FrequencyVis {
-  constructor(group_by, id) {
+  /**
+   * @param {string} group_by
+   * @param {string} id - CSS selector for the chart container
+   * @param {{ outerHeight?: number }} [options] - outerHeight: total SVG height (inner plot = outerHeight - margins)
+   */
+  constructor(group_by, id, options = {}) {
     this.rows = [];
     this.id = id;
     this.groupBy = group_by || "neighborhood";
+    this.outerHeight = options.outerHeight ?? 600;
   }
 
   initVis() {
-    var margin = {top: 20, right: 30, bottom: 40, left: 150},
-      width = 350 - margin.left - margin.right,
-      height = 600 - margin.top - margin.bottom;
+    /* Extra bottom space so slanted x-axis tick labels stay inside the SVG */
+    const margin = { top: 20, right: 30, bottom: 52, left: 150 };
+    const width = 350 - margin.left - margin.right;
+    const height = this.outerHeight - margin.top - margin.bottom;
 
     // Group the data by the chosen attribute.
     let data = d3.group(this.rows, d => d[this.groupBy])
@@ -29,10 +36,11 @@ class FrequencyVis {
     // Sort in descending order
     this.data.sort((f, s) => s.value - f.value);
 
+    const svgWidth = width + margin.left + margin.right;
     this.svg = d3.select(this.id)
       .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("viewBox", `0 0 ${svgWidth} ${this.outerHeight}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
       .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -44,8 +52,10 @@ class FrequencyVis {
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(this.xAxis).tickSizeOuter(0))
       .selectAll("text")
-        .attr("transform", "translate(-10,10)rotate(-90)")
-        .style("text-anchor", "end");
+        .style("text-anchor", "end")
+        .attr("dx", "-0.35em")
+        .attr("dy", "0.35em")
+        .attr("transform", "rotate(-45)");
     
     // Add Y axis
     this.yAxis = d3.scaleBand()
@@ -149,12 +159,21 @@ class FrequencyVis {
 }
 
 export async function initializeAttributeViews() {
-  const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq");
+  const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq", {
+    outerHeight: 680
+  });
   await neighborhoodFreq.initialize();
-  const receivedFreq = new FrequencyVis("methodReceived", "#received_freq");
+  const lowerChartHeight = 210;
+  const receivedFreq = new FrequencyVis("methodReceived", "#received_freq", {
+    outerHeight: lowerChartHeight
+  });
   await receivedFreq.initialize();
-  const deptFreq = new FrequencyVis("agency", "#dept_freq");
+  const deptFreq = new FrequencyVis("agency", "#dept_freq", {
+    outerHeight: lowerChartHeight
+  });
   await deptFreq.initialize();
-  const priorityFreq = new FrequencyVis("priority", "#priority_freq");
+  const priorityFreq = new FrequencyVis("priority", "#priority_freq", {
+    outerHeight: lowerChartHeight
+  });
   await priorityFreq.initialize();
 }

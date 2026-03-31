@@ -13,10 +13,15 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div id="map" aria-label="Map of 311 call hotspots"></div>
+    <div class="map-neighborhood-row">
+      <div id="map" aria-label="Map of 311 call hotspots"></div>
+      <div
+        id="neighborhood_freq"
+        aria-label="Calls by neighborhood chart"
+      ></div>
+    </div>
 
     <div class="multi-chart-container">
-        <div id="neighborhood_freq"></div>
         <div id="received_freq"></div>
         <div id="dept_freq"></div>
         <div id="priority_freq"></div>

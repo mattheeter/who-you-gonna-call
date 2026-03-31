@@ -6,12 +6,43 @@ body {
   color: #1e293b;
 }
 
+.map-neighborhood-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
 #map {
-  height: 560px;
+  flex: 1 1 360px;
+  min-width: 0;
+  height: 680px;
   border: 1px solid #d6dde8;
   border-radius: 10px;
   overflow: hidden;
   background: #fff;
+}
+
+#neighborhood_freq {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+#neighborhood_freq svg {
+  width: 350px;
+  height: 680px;
+}
+
+@media (max-width: 900px) {
+  .map-neighborhood-row {
+    flex-direction: column;
+  }
+
+  #neighborhood_freq {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 #map.leaflet-container:focus,
@@ -389,7 +420,19 @@ body {
 
 
 .multi-chart-container {
-  display: flex; /* Aligns child elements side by side */
-  justify-content: center; /* Centers the SVGs horizontally (optional) */
-  gap: 20px; /* Adds space between the SVGs (optional) */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.multi-chart-container > div {
+  flex: 1 1 0;
+  min-width: 200px;
+}
+
+.multi-chart-container > div svg {
+  width: 100%;
+  height: auto;
 }
