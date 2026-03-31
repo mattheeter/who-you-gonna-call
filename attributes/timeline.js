@@ -47,7 +47,7 @@ export class TimelineVis {
     const container = d3.select(this.id);
     container.selectAll("*").remove();
 
-    const margin = { top: 6, right: 8, bottom: 20, left: 36 };
+    const margin = { top: 6, right: 8, bottom: 20, left: 44 };
     const outerWidth = 980;
     const outerHeight = 108;
     const width = outerWidth - margin.left - margin.right;
@@ -93,7 +93,28 @@ export class TimelineVis {
       .attr("transform", `translate(0,${height})`)
       .call(xAxis);
 
-    const barWidth = Math.max(1, Math.floor(width / Math.max(1, this.data.length)) - 1);
+    // Width from `width / n` ignores real time gaps and makes bars huge when few weeks
+    // have data—bars then overlap. Size each bar from the smallest pixel gap between
+    // adjacent weeks, with a cap so sparse timelines stay readable.
+    const barPadding = 2;
+    const maxBarCap = 32;
+    const xs = this.data.map((d) => x(d.weekStart));
+    let barWidth = 8;
+    if (this.data.length >= 2) {
+      const gaps = [];
+      for (let i = 0; i < xs.length - 1; i += 1) {
+        gaps.push(xs[i + 1] - xs[i]);
+      }
+      const minGap = Math.min(...gaps);
+      barWidth = Math.max(1, Math.min(maxBarCap, minGap - barPadding));
+    } else if (this.data.length === 1) {
+      barWidth = Math.min(maxBarCap, Math.max(4, width * 0.12));
+    }
+
+    const barX = (d) => {
+      const cx = x(d.weekStart);
+      return Math.min(Math.max(0, cx - barWidth / 2), width - barWidth);
+    };
 
     const bars = g
       .append("g")
@@ -101,7 +122,7 @@ export class TimelineVis {
       .selectAll("rect")
       .data(this.data)
       .join("rect")
-      .attr("x", (d) => x(d.weekStart))
+      .attr("x", barX)
       .attr("y", (d) => y(d.count))
       .attr("width", barWidth)
       .attr("height", (d) => height - y(d.count))
@@ -201,7 +222,7 @@ export class TimelineVis {
       svg
         .append("text")
         .attr("class", "timeline-note")
-        .attr("x", margin.left)
+        .attr("x", margin.left + 4)
         .attr("y", outerHeight - 4)
         .text(`${this.missingCreatedDateCount} calls missing DATE_CREATED (excluded from timeline).`);
     }
