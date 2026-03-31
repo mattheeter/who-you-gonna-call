@@ -3,20 +3,37 @@ import { TimelineVis } from "./timeline.js";
 import { SERVICE_TYPES } from "../map/constants.js";
 
 class FrequencyVis {
-  constructor(group_by, id) {
+  /**
+   * @param {string} group_by
+   * @param {string} id - CSS selector for the chart container
+   * @param {{ outerHeight?: number, syncHeightToContainer?: boolean, color?: string }} [options] - outerHeight: total SVG height (inner plot = outerHeight - margins)
+   */
+  constructor(group_by, id, options = {}) {
     this.rows = [];
     this.id = id;
     this.groupBy = group_by || "neighborhood";
     this.selectedRowIds = null; // Set<string> | null
+    this.outerHeight = options.outerHeight ?? 600;
+    this.syncHeightToContainer = options.syncHeightToContainer ?? false;
+    this.color = options.color ?? "#69b3a2";
   }
 
   initVis() {
+    if (this.syncHeightToContainer) {
+      const el = document.querySelector(this.id);
+      const h = el?.clientHeight;
+      if (h && h > 0) {
+        this.outerHeight = Math.round(h);
+      }
+    }
+
     // Redraw from scratch so selection changes don't stack duplicate charts.
     d3.select(this.id).selectAll("*").remove();
 
-    var margin = {top: 20, right: 30, bottom: 40, left: 150},
-      width = 350 - margin.left - margin.right,
-      height = 600 - margin.top - margin.bottom;
+    /* Extra bottom space so slanted x-axis tick labels stay inside the SVG */
+    const margin = { top: 20, right: 30, bottom: 52, left: 150 };
+    const width = 350 - margin.left - margin.right;
+    const height = this.outerHeight - margin.top - margin.bottom;
 
     const rows = this.selectedRowIds
       ? this.rows.filter((row) => this.selectedRowIds.has(row.rowId))
@@ -48,10 +65,11 @@ class FrequencyVis {
       return;
     }
 
+    const svgWidth = width + margin.left + margin.right;
     this.svg = d3.select(this.id)
       .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("viewBox", `0 0 ${svgWidth} ${this.outerHeight}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
       .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -64,8 +82,10 @@ class FrequencyVis {
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(this.xAxis).tickSizeOuter(0))
       .selectAll("text")
-        .attr("transform", "translate(-10,10)rotate(-90)")
-        .style("text-anchor", "end");
+        .style("text-anchor", "end")
+        .attr("dx", "-0.35em")
+        .attr("dy", "0.35em")
+        .attr("transform", "rotate(-45)");
     
     // Add Y axis
     this.yAxis = d3.scaleBand()
@@ -85,8 +105,9 @@ class FrequencyVis {
         .attr("y", d => this.yAxis(d.key))
         .attr("width", d => this.xAxis(d.value) - this.xAxis(0))
         .attr("height", this.yAxis.bandwidth())
-        .attr("fill", "#69b3a2");
-  
+        .attr("fill", this.color);
+
+    const accent = this.color;
     this.bars
       .on("mouseover", (event, d) => {
         d3.select("#tooltip")
@@ -94,7 +115,7 @@ class FrequencyVis {
           .html(`
             <div class="tooltip_body">
               <div class="tooltip_header">
-                <span class="tooltip_dot" style="background:#69b3a2"></span>
+                <span class="tooltip_dot" style="background:${accent}"></span>
                 <strong class="tooltip_title">${d.key}</strong>
               </div>
               <dl class="tooltip_details">
@@ -104,7 +125,7 @@ class FrequencyVis {
               </dl>
             </div>
           `)
-          .style("border", "1px solid #69b3a2");
+          .style("border", `1px solid ${accent}`);
       })
       .on("mousemove", (event) => {
         d3.select("#tooltip")
@@ -198,10 +219,36 @@ export async function initializeAttributeViews() {
 
   const timeline = new TimelineVis({ id: "#timeline" });
 
-  const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq");
-  const receivedFreq = new FrequencyVis("methodReceived", "#received_freq");
-  const deptFreq = new FrequencyVis("agency", "#dept_freq");
-  const priorityFreq = new FrequencyVis("priority", "#priority_freq");
+  const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq", {
+    outerHeight: 680,
+    syncHeightToContainer: true,
+    color: "#4361ee"
+  });
+
+  const neighborhoodEl = document.querySelector("#neighborhood_freq");
+  if (neighborhoodEl) {
+    let lastHeight = -1;
+    const ro = new ResizeObserver((entries) => {
+      const h = Math.round(entries[0].contentRect.height);
+      if (h < 2 || h === lastHeight) return;
+      lastHeight = h;
+      neighborhoodFreq.initVis();
+    });
+    ro.observe(neighborhoodEl);
+  }
+  const lowerChartHeight = 210;
+  const receivedFreq = new FrequencyVis("methodReceived", "#received_freq", {
+    outerHeight: lowerChartHeight,
+    color: "#a78bfa"
+  });
+  const deptFreq = new FrequencyVis("agency", "#dept_freq", {
+    outerHeight: lowerChartHeight,
+    color: "#f59e0b"
+  });
+  const priorityFreq = new FrequencyVis("priority", "#priority_freq", {
+    outerHeight: lowerChartHeight,
+    color: "#ef4444"
+  });
 
   const getInitialSelectedServiceTypes = () => {
     const selected = window.__selectedServiceTypes;

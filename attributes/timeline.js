@@ -47,9 +47,9 @@ export class TimelineVis {
     const container = d3.select(this.id);
     container.selectAll("*").remove();
 
-    const margin = { top: 18, right: 16, bottom: 36, left: 54 };
+    const margin = { top: 6, right: 8, bottom: 20, left: 36 };
     const outerWidth = 980;
-    const outerHeight = 220;
+    const outerHeight = 108;
     const width = outerWidth - margin.left - margin.right;
     const height = outerHeight - margin.top - margin.bottom;
 
@@ -58,7 +58,7 @@ export class TimelineVis {
         .append("div")
         .attr("class", "timeline-empty")
         .style("color", "#94a3b8")
-        .style("padding", "12px")
+        .style("padding", "6px 8px")
         .text(
           this.missingCreatedDateCount > 0
             ? `${this.missingCreatedDateCount} calls missing DATE_CREATED (excluded from timeline).`
@@ -85,19 +85,13 @@ export class TimelineVis {
       .range([height, 0]);
 
     const xAxis = d3.axisBottom(x).ticks(d3.utcMonth.every(1)).tickFormat(d3.utcFormat("%b"));
-    const yAxis = d3.axisLeft(y).ticks(5);
+    const yAxis = d3.axisLeft(y).ticks(4);
 
     g.append("g").attr("class", "timeline-axis timeline-axis-y").call(yAxis);
     g.append("g")
       .attr("class", "timeline-axis timeline-axis-x")
       .attr("transform", `translate(0,${height})`)
       .call(xAxis);
-
-    g.append("text")
-      .attr("class", "timeline-axis-label")
-      .attr("x", 0)
-      .attr("y", -6)
-      .text("Requests");
 
     const barWidth = Math.max(1, Math.floor(width / Math.max(1, this.data.length)) - 1);
 
@@ -208,7 +202,7 @@ export class TimelineVis {
         .append("text")
         .attr("class", "timeline-note")
         .attr("x", margin.left)
-        .attr("y", outerHeight - 8)
+        .attr("y", outerHeight - 4)
         .text(`${this.missingCreatedDateCount} calls missing DATE_CREATED (excluded from timeline).`);
     }
 
