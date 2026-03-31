@@ -77,6 +77,8 @@ body {
   flex: 0 0 auto;
   width: min(118px, 100%);
   min-width: 0;
+  padding-left: 8px;
+  box-sizing: border-box;
 }
 
 .panel-title {
@@ -97,8 +99,6 @@ body {
 .panel-timeline {
   flex: 1 1 280px;
   min-width: 0;
-  padding-left: 8px;
-  box-sizing: border-box;
 }
 
 .panel-actions {

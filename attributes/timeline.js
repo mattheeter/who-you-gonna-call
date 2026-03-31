@@ -47,7 +47,7 @@ export class TimelineVis {
     const container = d3.select(this.id);
     container.selectAll("*").remove();
 
-    const margin = { top: 6, right: 8, bottom: 20, left: 44 };
+    const margin = { top: 6, right: 8, bottom: 20, left: 36 };
     const outerWidth = 980;
     const outerHeight = 108;
     const width = outerWidth - margin.left - margin.right;
@@ -222,7 +222,7 @@ export class TimelineVis {
       svg
         .append("text")
         .attr("class", "timeline-note")
-        .attr("x", margin.left + 4)
+        .attr("x", margin.left)
         .attr("y", outerHeight - 4)
         .text(`${this.missingCreatedDateCount} calls missing DATE_CREATED (excluded from timeline).`);
     }
