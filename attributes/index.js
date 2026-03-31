@@ -1,17 +1,26 @@
 import { loadServiceRows } from "../map/data.js";
 import { SERVICE_TYPES } from "../map/constants.js";
 
+/** Sampled from the rendered simpleheat gradient (cold → hot) */
+const HEATMAP_CHART_COLORS = {
+  neighborhood: "#4361ee",
+  methodReceived: "#a78bfa",
+  agency: "#f59e0b",
+  priority: "#ef4444"
+};
+
 class FrequencyVis {
   /**
    * @param {string} group_by
    * @param {string} id - CSS selector for the chart container
-   * @param {{ outerHeight?: number }} [options] - outerHeight: total SVG height (inner plot = outerHeight - margins)
+   * @param {{ outerHeight?: number, barColor?: string }} [options] - outerHeight: total SVG height; barColor: single fill for all bars (heatmap palette)
    */
   constructor(group_by, id, options = {}) {
     this.rows = [];
     this.id = id;
     this.groupBy = group_by || "neighborhood";
     this.outerHeight = options.outerHeight ?? 600;
+    this.barColor = options.barColor ?? "#69b3a2";
   }
 
   initVis() {
@@ -67,6 +76,7 @@ class FrequencyVis {
 
     // Add bars
     this.barsLayer = this.svg.append("g");
+    const barColor = this.barColor;
     this.bars = this.barsLayer
       .selectAll()
       .data(this.data)
@@ -75,7 +85,7 @@ class FrequencyVis {
         .attr("y", d => this.yAxis(d.key))
         .attr("width", d => this.xAxis(d.value) - this.xAxis(0))
         .attr("height", this.yAxis.bandwidth())
-        .attr("fill", "#69b3a2");
+        .attr("fill", barColor);
   
     this.bars
       .on("mouseover", (event, d) => {
@@ -84,7 +94,7 @@ class FrequencyVis {
           .html(`
             <div class="tooltip_body">
               <div class="tooltip_header">
-                <span class="tooltip_dot" style="background:#69b3a2"></span>
+                <span class="tooltip_dot" style="background:${barColor}"></span>
                 <strong class="tooltip_title">${d.key}</strong>
               </div>
               <dl class="tooltip_details">
@@ -94,7 +104,7 @@ class FrequencyVis {
               </dl>
             </div>
           `)
-          .style("border", "1px solid #69b3a2");
+          .style("border", `1px solid ${barColor}`);
       })
       .on("mousemove", (event) => {
         d3.select("#tooltip")
@@ -160,20 +170,24 @@ class FrequencyVis {
 
 export async function initializeAttributeViews() {
   const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq", {
-    outerHeight: 680
+    outerHeight: 680,
+    barColor: HEATMAP_CHART_COLORS.neighborhood
   });
   await neighborhoodFreq.initialize();
   const lowerChartHeight = 210;
   const receivedFreq = new FrequencyVis("methodReceived", "#received_freq", {
-    outerHeight: lowerChartHeight
+    outerHeight: lowerChartHeight,
+    barColor: HEATMAP_CHART_COLORS.methodReceived
   });
   await receivedFreq.initialize();
   const deptFreq = new FrequencyVis("agency", "#dept_freq", {
-    outerHeight: lowerChartHeight
+    outerHeight: lowerChartHeight,
+    barColor: HEATMAP_CHART_COLORS.agency
   });
   await deptFreq.initialize();
   const priorityFreq = new FrequencyVis("priority", "#priority_freq", {
-    outerHeight: lowerChartHeight
+    outerHeight: lowerChartHeight,
+    barColor: HEATMAP_CHART_COLORS.priority
   });
   await priorityFreq.initialize();
 }
