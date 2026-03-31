@@ -13,7 +13,7 @@ class FrequencyVis {
   /**
    * @param {string} group_by
    * @param {string} id - CSS selector for the chart container
-   * @param {{ outerHeight?: number, barColor?: string }} [options] - outerHeight: total SVG height; barColor: single fill for all bars (heatmap palette)
+   * @param {{ outerHeight?: number, barColor?: string, marginTop?: number }} [options] - outerHeight: total SVG height; barColor: single fill for all bars (heatmap palette); marginTop: inner top inset (default 20)
    */
   constructor(group_by, id, options = {}) {
     this.rows = [];
@@ -21,12 +21,19 @@ class FrequencyVis {
     this.groupBy = group_by || "neighborhood";
     this.outerHeight = options.outerHeight ?? 600;
     this.barColor = options.barColor ?? "#69b3a2";
+    this.marginTop = options.marginTop ?? 20;
+    this.fitContainer = options.fitContainer ?? false;
   }
 
   initVis() {
-    /* Extra bottom space so slanted x-axis tick labels stay inside the SVG */
-    const margin = { top: 20, right: 30, bottom: 52, left: 150 };
+    const margin = { top: this.marginTop, right: 30, bottom: 52, left: 150 };
     const width = 350 - margin.left - margin.right;
+
+    if (this.fitContainer) {
+      const containerHeight = document.querySelector(this.id).clientHeight;
+      if (containerHeight > 0) this.outerHeight = containerHeight;
+    }
+
     const height = this.outerHeight - margin.top - margin.bottom;
 
     // Group the data by the chosen attribute.
@@ -46,10 +53,11 @@ class FrequencyVis {
     this.data.sort((f, s) => s.value - f.value);
 
     const svgWidth = width + margin.left + margin.right;
-    this.svg = d3.select(this.id)
+    const svgEl = d3.select(this.id)
       .append("svg")
         .attr("viewBox", `0 0 ${svgWidth} ${this.outerHeight}`)
-        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("preserveAspectRatio", "xMidYMid meet");
+    this.svg = svgEl
       .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -169,12 +177,8 @@ class FrequencyVis {
 }
 
 export async function initializeAttributeViews() {
-  const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq", {
-    outerHeight: 680,
-    barColor: HEATMAP_CHART_COLORS.neighborhood
-  });
-  await neighborhoodFreq.initialize();
-  const lowerChartHeight = 210;
+  const lowerChartHeight = 230;
+
   const receivedFreq = new FrequencyVis("methodReceived", "#received_freq", {
     outerHeight: lowerChartHeight,
     barColor: HEATMAP_CHART_COLORS.methodReceived
@@ -190,4 +194,12 @@ export async function initializeAttributeViews() {
     barColor: HEATMAP_CHART_COLORS.priority
   });
   await priorityFreq.initialize();
+
+  const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq", {
+    outerHeight: 900,
+    barColor: HEATMAP_CHART_COLORS.neighborhood,
+    marginTop: 8,
+    fitContainer: true
+  });
+  await neighborhoodFreq.initialize();
 }

@@ -13,18 +13,19 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="map-neighborhood-row">
-      <div id="map" aria-label="Map of 311 call hotspots"></div>
+    <div class="dashboard-layout">
+      <div class="left-column">
+        <div id="map" aria-label="Map of 311 call hotspots"></div>
+        <div class="multi-chart-container">
+          <div id="received_freq"></div>
+          <div id="dept_freq"></div>
+          <div id="priority_freq"></div>
+        </div>
+      </div>
       <div
         id="neighborhood_freq"
         aria-label="Calls by neighborhood chart"
       ></div>
-    </div>
-
-    <div class="multi-chart-container">
-        <div id="received_freq"></div>
-        <div id="dept_freq"></div>
-        <div id="priority_freq"></div>
     </div>
     <!-- <div id="tooltip" class="leaflet-tooltip.map-tooltip"></div>   -->
     <div id="tooltip" class="tooltip_container"></div>  
