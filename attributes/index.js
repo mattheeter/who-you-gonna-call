@@ -9,6 +9,13 @@ const HEATMAP_CHART_COLORS = {
   priority: "#ef4444"
 };
 
+/** Keep in sync with `#map` height, `.left-column` gap, and lower charts in styles.css */
+const MAP_HEIGHT_PX = 680;
+const LEFT_COLUMN_GAP_PX = 20;
+const LOWER_CHART_HEIGHT_PX = 230;
+const NEIGHBORHOOD_CHART_OUTER_HEIGHT_PX =
+  MAP_HEIGHT_PX + LEFT_COLUMN_GAP_PX + LOWER_CHART_HEIGHT_PX;
+
 class FrequencyVis {
   /**
    * @param {string} group_by
@@ -177,26 +184,24 @@ class FrequencyVis {
 }
 
 export async function initializeAttributeViews() {
-  const lowerChartHeight = 230;
-
   const receivedFreq = new FrequencyVis("methodReceived", "#received_freq", {
-    outerHeight: lowerChartHeight,
+    outerHeight: LOWER_CHART_HEIGHT_PX,
     barColor: HEATMAP_CHART_COLORS.methodReceived
   });
   await receivedFreq.initialize();
   const deptFreq = new FrequencyVis("agency", "#dept_freq", {
-    outerHeight: lowerChartHeight,
+    outerHeight: LOWER_CHART_HEIGHT_PX,
     barColor: HEATMAP_CHART_COLORS.agency
   });
   await deptFreq.initialize();
   const priorityFreq = new FrequencyVis("priority", "#priority_freq", {
-    outerHeight: lowerChartHeight,
+    outerHeight: LOWER_CHART_HEIGHT_PX,
     barColor: HEATMAP_CHART_COLORS.priority
   });
   await priorityFreq.initialize();
 
   const neighborhoodFreq = new FrequencyVis("neighborhood", "#neighborhood_freq", {
-    outerHeight: 900,
+    outerHeight: NEIGHBORHOOD_CHART_OUTER_HEIGHT_PX,
     barColor: HEATMAP_CHART_COLORS.neighborhood,
     marginTop: 8,
     fitContainer: true

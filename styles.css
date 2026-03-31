@@ -21,7 +21,7 @@ body {
   gap: 20px; /* keep in sync with LEFT_COLUMN_GAP_PX in attributes/index.js */
 }
 
-/* Map height + gap + lower chart height must match neighborhood outerHeight in attributes/index.js */
+/* MAP_HEIGHT_PX + LEFT_COLUMN_GAP_PX + LOWER_CHART_HEIGHT_PX → NEIGHBORHOOD_CHART_OUTER_HEIGHT_PX (930); see attributes/index.js */
 #map {
   width: 100%;
   min-width: 0;
@@ -434,7 +434,7 @@ body {
 
 .multi-chart-container {
   display: flex;
-  gap: 20px;
+  gap: 12px;
   align-items: flex-end;
 }
 
