@@ -376,6 +376,8 @@ body {
   height: 9px;
   border-radius: 50%;
   flex-shrink: 0;
+  /* Match circleMarker stroke in render.js (#1f2937, weight 0.5); ring keeps light fills visible on white */
+  box-shadow: 0 0 0 1px rgba(31, 41, 55, 0.45);
 }
 
 .tooltip_title {
