@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Who You Gonna Call? Map</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="map" aria-label="Map of 311 call hotspots"></div>
+
+    <section class="panel" aria-label="311 calls over time">
+      <h2 class="panel-title">Calls over the year</h2>
+      <p class="panel-subtitle">Weekly count of requests created (your selected service type).</p>
+      <div class="panel-actions" aria-label="Visualization controls">
+        <button id="reset-filters" type="button" class="panel-action-btn">Reset</button>
+        <button id="play-timeline" type="button" class="panel-action-btn">Play</button>
+        <span id="play-timeline-status" class="panel-action-status" aria-live="polite"></span>
+      </div>
+      <div id="timeline"></div>
+    </section>
+
+    <div class="multi-chart-container">
+        <div id="neighborhood_freq"></div>
+        <div id="received_freq"></div>
+        <div id="dept_freq"></div>
+        <div id="priority_freq"></div>
+    </div>
+    <!-- <div id="tooltip" class="leaflet-tooltip.map-tooltip"></div>   -->
+    <div id="tooltip" class="tooltip_container"></div>  
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="map/leaflet-heat.js"></script>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

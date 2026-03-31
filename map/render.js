@@ -1,0 +1,87 @@
+import { HIGHLIGHT_FILL_OPACITY, HIGHLIGHT_STROKE_OPACITY, SERVICE_TYPES } from "./constants.js";
+
+const { L } = window;
+const SERVICE_TYPE_LABELS = new Map(
+  SERVICE_TYPES.map((serviceType) => [serviceType.value, serviceType.label])
+);
+
+export function drawPoints({ points, activeKeys, brushedRows, pointRenderer, markerLayer, heatMap }) {
+  markerLayer.clearLayers(); // redraw from scratch so legend filters fully reset the layer
+
+  var latLngs = Array();
+  points.forEach(({ row, fillColor, legendKey }) => {
+    if (!activeKeys.has(legendKey)) return;
+    if (row.latitude === null || row.longitude === null) return;
+    if (brushedRows && !brushedRows.has(row.rowId)) return;
+    latLngs.push([row.latitude, row.longitude]);
+  });
+  heatMap.setLatLngs(latLngs);
+
+
+  points.forEach(({ row, fillColor, legendKey }) => {
+    if (!activeKeys.has(legendKey)) return;
+    if (row.latitude === null || row.longitude === null) return;
+    if (brushedRows && !brushedRows.has(row.rowId)) return;
+
+    const marker = L.circleMarker([row.latitude, row.longitude], {
+      radius: 3,
+      color: "#1f2937",
+      weight: 0.5,
+      opacity: HIGHLIGHT_STROKE_OPACITY,
+      renderer: pointRenderer,
+      fillColor,
+      fillOpacity: HIGHLIGHT_FILL_OPACITY
+    });
+    const timeText =
+      row.responseTimeDays === null
+        ? "Unavailable"
+        : `${row.responseTimeDays} ${row.responseTimeDays === 1 ? "day" : "days"}`;
+
+    marker.bindTooltip(
+      `<div class="tooltip_body">
+        <div class="tooltip_header">
+          <span class="tooltip_dot" style="background:${fillColor}"></span>
+          <strong class="tooltip_title">${SERVICE_TYPE_LABELS.get(row.serviceType) || row.srTypeDesc}</strong>
+        </div>
+        <dl class="tooltip_details">
+          <div class="tooltip_row">
+            <dt>Neighborhood</dt><dd>${row.neighborhood}</dd>
+          </div>
+          <div class="tooltip_row">
+            <dt>Agency</dt><dd>${row.agency}</dd>
+          </div>
+          <div class="tooltip_row">
+            <dt>Method received</dt><dd>${row.methodReceived}</dd>
+          </div>
+          <div class="tooltip_row">
+            <dt>Priority</dt><dd>${row.priority}</dd>
+          </div>
+          <div class="tooltip_row">
+            <dt>Resolution</dt><dd>${timeText}</dd>
+          </div>
+          <div class="tooltip_row">
+            <dt>Created</dt><dd>${row.createdDateLabel}</dd>
+          </div>
+          <div class="tooltip_row">
+            <dt>Updated</dt><dd>${row.updatedDateLabel}</dd>
+          </div>
+        </dl>
+      </div>`,
+      {
+        className: "map-tooltip",
+        direction: "top",
+        offset: L.point(0, -10),
+        opacity: 1
+      }
+    );
+    marker.on("tooltipopen", ({ tooltip }) => {
+      // leaflet creates the tooltip DOM lazily, so the accent CSS variable has to be written after open instead of when the marker is first configured
+      const tooltipElement = tooltip.getElement();
+      if (tooltipElement) {
+        tooltipElement.style.setProperty("--map-tooltip-accent", fillColor);
+      }
+    });
+
+    markerLayer.addLayer(marker);
+  });
+}
