@@ -22,7 +22,13 @@ One important design decision is that the app does not attempt to visualize ever
 
 ## Sketches 
 
-JP  
+<img alt="Initial Project Sketch" src="InitialProjectSketch.png" />
+
+We started our project by creating the sketch shown above as a reference for us to begin building and laying out our visualizations. We found sketching to be crucial in our ability to work asynchronously on the project as it enabled us to work individually while ensuring we were working towards our shared vision. With visually creative projects such as this one, making design decisions can be very difficult but using sketches to explain our thoughts helped us communicate our ideas effectively. 
+
+The main part of the sketch is how we wanted to size and layout the map. We all agreed that it should be the first thing users see and interact with, because it is the best way to convey the geospatial insights of the 311 data. Below the map, we wanted to add something which showed the same data as above but on a time scale to supplement what is shown above. In our final product, we coupled the plot below to the map with an animation to better show the changes in 311 calls over time. 
+
+While the sketches were a great starting point, you will see that our final project has taken some large deviations. We were able to bake in certain features like the panning and zooming more natively, and were able to consolidate the legend and color by selections into one control box saving space on the screen. We found that a lot of the supplemental visualizations would work well by themselves without having to be on the screen at the same time as the map. We then decided to remove them from the side and put them below the map to make more space. 
 
 ## Vis components 
 
@@ -73,7 +79,9 @@ Matt -
 
 Austin -  
 
-JP -  
+JP -  I found that AI was really useful to add new `Color by` options once the styling was already determined for at least one other option and the controller object had already been made. Using the built-in Copilot in VSC, I was able to quickly implement the `Service Types` option to the legend without having to manually create each individual portion. 
+
+I was able to use comments in the text editor as well as the chat feature to provide the context of the other implemented options. Copilot was able to use thes to model the new feature after the previous ones, matching the formatting, styling, and features supported in the other options. The output was not fully implemented and didn't create any of the new logic which makes `Service Types` different, but it did save me a lot of time and let me focus on implementing the nuances like how to change the rows of data being plotted, and toggle which points are visible and which are not using the legend.
 
 ## Attribution 
 
