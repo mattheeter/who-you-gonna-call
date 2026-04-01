@@ -89,7 +89,7 @@ Soham - I used Cursor to help me write the documentation for this project as wel
 
 Matt -  I tried to use ChatGPT to help debug the heatmap problems. After going back and forth for awhile, I was receiving lots of recommendations to fix the way things were seprated into panes (with the goal of getting the interactivity pane in the front). This never quite worked how we wanted, and it was Gemini's idea to add the heatmap layer once (instead of every update) and update it with the new point information. I'm a ittle disappointed I couldn't get this far with ChatGPT, especially given that it was the automatic Google search Gemini response that helped me get through the problem.
 
-Austin -  
+Austin -  I used Cursor to help with UI layouts, specifically when laying out the map with the charts and timelines and dealing with CSS to get the styles I was wanting to achieve. It also helped to add East Walnut Hills to our neighborhood outline geojson, because it was originally missing from the dataset. In addition to UI, Cursor was helpful for debugging and providing useful snippets for filtering and coloring the points on the map.
 
 JP -  I found that AI was really useful to add new `Color by` options once the styling was already determined for at least one other option and the controller object had already been made. Using the built-in Copilot in VSC, I was able to quickly implement the `Service Types` option to the legend without having to manually create each individual portion. 
 
