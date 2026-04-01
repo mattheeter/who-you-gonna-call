@@ -65,17 +65,29 @@ Seasonal patterns — some categories (e.g., snow/ice/trash pickups) spike in wi
 
 ## Process 
 
-Matt 
+### Libraries
+
+We used only a handful of libraries to build our application. The main library we relied on, [D3](https://d3js.org/), 
+enables creation of and brushing, linking, animating, and providing on-demand details within the various charts we display. All charts utilize D3 to produce their SVG elements, position them in the right location, and add the necessary event handlers to provide hover and brushing interactions. The map is made with [Leaflet](https://leafletjs.com/). Leaflet has built-in functionality for producing tiles of street or satellite-based geospatial information, and an interface for adding various elements such as markers and the heatmap, and interactions like brushing, panning, and zooming. For the heatmap specifically, a library called [Leaflet.heat](https://github.com/Leaflet/Leaflet.heat) was used. This took in the same latitude/longitude pairs as the markers and drew on the map based on the density of the data. 
+
+### Structure
+
+As for code structure, we settled on a pretty flat layout. Two modules comprise the project: one for attribute/timeline views and one for the map. The attribute and timeline view code is pretty strictly D3-derived, thus it logically gets grouped together. The map module more heavily relies on Leaflet, thus it is on its own. This module also contains logic for data parsing and more general filter operations (such as that for service types). It's located in the map module because the map requires tighter coupling to the data (more controls and attributes are required) whereas the other module has more flexibility with their data interface and can adapt to what the map might need.
+
+### Code and App
+To run our code, pull it down from [here](https://github.com/mattheeter/who-you-gonna-call/tree/1.0.1) and serve it using your choice of framework. Our deployed application lives [here](https://who-you-gonna-call-five.vercel.app/).
 
 ## Challenges/Future Work 
 
-Matt  
+We had a few challenges that we faced along the way in creating our project. No one in our group is particularly privy to CSS, thus styling was a challenge. There was stuff with the way classes vs. IDs are defined that we got hung up on and it took awhile to find a way to standardize our tooltip styling. We also struggled with map interactions once the heatmap was added. The heatmap seemingly was placed in front of what the map uses for interacting with the markers. Having it so that the heatmap layer was added prior to the marker layer made it so that on initial load interactivity was restored, but any filtering messed it back up. The solution was to not re-create the heatmap layer with every change but rather to update the layer that was already there. 
+
+One nice-to-have that could be addressed in the future is sharing relevant attributes between visualizations. A concrete example of this is with the attribute views. Our map uses one color scheme to differentiate between neighborhoods, e.g., but the corresponding view of call counts does not adopt this scheme, creating a little bit of a disconnect.
 
 ## AI and Collaboration 
 
 Soham - I used Cursor to help me write the documentation for this project as well as helping me with the animating the timeline for the Level 8 goal. I also used Claude Code for some debugging as I find it better with debugging single files as Cursor can get confused with the project context sometimes. 
 
-Matt -  
+Matt -  I tried to use ChatGPT to help debug the heatmap problems. After going back and forth for awhile, I was receiving lots of recommendations to fix the way things were seprated into panes (with the goal of getting the interactivity pane in the front). This never quite worked how we wanted, and it was Gemini's idea to add the heatmap layer once (instead of every update) and update it with the new point information. I'm a ittle disappointed I couldn't get this far with ChatGPT, especially given that it was the automatic Google search Gemini response that helped me get through the problem.
 
 Austin -  
 
