@@ -107,4 +107,4 @@ JP implemented the various Service Types for the 311 calls and the ability to se
 
 ## Demo
 
-A demonstration of our video can be found [here](https://youtu.be/GZ52v-P_riE).
+A demonstration video of our project can be found [here](https://youtu.be/GZ52v-P_riE).
