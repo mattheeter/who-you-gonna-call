@@ -75,7 +75,7 @@ enables creation of and brushing, linking, animating, and providing on-demand de
 As for code structure, we settled on a pretty flat layout. Two modules comprise the project: one for attribute/timeline views and one for the map. The attribute and timeline view code is pretty strictly D3-derived, thus it logically gets grouped together. The map module more heavily relies on Leaflet, thus it is on its own. This module also contains logic for data parsing and more general filter operations (such as that for service types). It's located in the map module because the map requires tighter coupling to the data (more controls and attributes are required) whereas the other module has more flexibility with their data interface and can adapt to what the map might need.
 
 ### Code and App
-To run our code, pull it down from [here](https://github.com/mattheeter/who-you-gonna-call/tree/1.0.3) and serve it using your choice of framework. Our deployed application lives [here](https://who-you-gonna-call-five.vercel.app/).
+To run our code, pull it down from [here](https://github.com/mattheeter/who-you-gonna-call/tree/1.0.4) and serve it using your choice of framework. Our deployed application lives [here](https://who-you-gonna-call-five.vercel.app/).
 
 ## Challenges/Future Work 
 
